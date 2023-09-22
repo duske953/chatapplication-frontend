@@ -79,6 +79,8 @@ export default function Root() {
   }, [getMessage]);
 
   function handleChatClick(userId) {
+    const matchMedia = window.matchMedia("(max-width:43.75em)");
+    matchMedia.matches && setToggleNav(!toggleNav);
     socket.emit("getStoredMessages", "msg");
     const receiver = activeUsers.find((ele, i) => ele.id === userId);
     setMessageHeader({

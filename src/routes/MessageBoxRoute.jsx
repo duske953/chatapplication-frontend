@@ -76,7 +76,7 @@ export default function MessageBoxRoute() {
       ...message,
       { position: "left", type: "text", text: inputText },
     ]);
-    setInputText("");
+    // setInputText("");
     inputRef.current.value = "";
   }
 
