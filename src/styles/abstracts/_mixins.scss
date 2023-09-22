@@ -1,0 +1,12 @@
+@mixin resizeProfileImg {
+  width: 3.4rem;
+  height: 3.4rem;
+  object-fit: cover;
+  border-radius: 100px;
+}
+
+@mixin Flex($align, $direction: row) {
+  display: flex;
+  align-items: $align;
+  flex-direction: $direction;
+}

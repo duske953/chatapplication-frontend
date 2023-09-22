@@ -1,0 +1,247 @@
+@use "../abstracts/variables" as v;
+@use "../abstracts/mixins" as m;
+.chats-section {
+  &__container {
+    display: grid;
+    @media(max-width:43.75em) {
+      display: initial;
+}
+    grid-template-columns: 25rem auto;
+    height: 100vh;
+    // gap: v.$sm-flex-gap;
+    margin: 0 auto;
+  }
+
+  &__category {
+    display: flex;
+    justify-content: space-around;
+    padding: 9.8rem 0 0 0;
+
+    & p {
+      font-size: 1.6rem;
+      font-weight: 500;
+      color: v.$primary-grey-color;
+      cursor: pointer;
+    }
+  }
+
+  &__chats-box {
+    @include m.Flex(initial, column);
+    list-style: none;
+    gap: 2.4rem;
+    padding: 2.4rem 0;
+    max-height: 100vh;
+    overflow-y: auto;
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #ced4da;
+      border-radius: 20px;
+    }
+  }
+
+  &__chats {
+    @include m.Flex(center, row);
+    gap: 1.4rem;
+    &-img {
+      @include m.resizeProfileImg;
+    }
+
+    & a:link,
+    & a:visited {
+      @include m.Flex(center, row);
+      gap: v.$sm-flex-gap;
+      text-decoration: none;
+      color: v.$primary-grey-color;
+    }
+  }
+
+  &__chats-name {
+    font-size: 1.8rem;
+    font-weight: 500;
+    text-transform: capitalize;
+  }
+
+  &__icon-close{
+    font-size: 2.8rem;
+    position: absolute;
+    right: 0;
+    top:1rem;
+    display: none;
+    z-index: 1000;
+    cursor: pointer;
+
+
+    @media(max-width: 43.75em){
+      display: block;
+    }
+
+    // @media(max-width: 21.87em){
+    //   right:-9.8rem;
+    // }
+  }
+
+  &__chats-discuss {
+    font-size: 1.6rem;
+  }
+  &__ut-cs {
+    border-right: 2px solid v.$primary-grey-color;
+    transition: all 0.3s ease-in-out;
+    @media(max-width:43.75em) {
+      position: absolute;
+      width: 70%;
+      background-color:#f8f9fa;
+      height: 100vh;
+      z-index: 10;
+      transform:translateX(-150%);
+}
+
+   @media(max-width: 22em){
+      width: 100%;
+    }
+&--active{
+  @media(max-width:43.75em) {
+    transform: translateX(0);
+  }
+}
+  }
+
+  &__message-box{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    @media(max-width:43.75em) {
+     position:absolute;
+     width: 100%;
+     height: 100%;
+  }
+}
+
+
+  &__msg-send-btn {
+    border-radius: 100px !important;
+    // position: fixed;
+    // bottom: 0;
+    // /* top: 50%; */
+    // border: 50%;
+    // /* bottom: 50%; */
+    // right: 3vw;
+    // transform: translateY(-39%);
+  }
+
+  &__chat-receiver {
+    @include m.Flex(center, row);
+    gap: v.$sm-flex-gap;
+    padding: 2.4rem 0 1.8rem 2.2rem;
+    padding-bottom: 1.6rem;
+    border-bottom: 2px solid v.$primary-grey-color;
+
+    &-details p:first-child {
+      font-size: 1.8rem;
+    }
+    & p:nth-child(2) {
+      font-size: 1.4rem;
+      font-weight: 500;
+    }
+  }
+  &__chat-receiver-img {
+    @include m.resizeProfileImg;
+  }
+
+  &__chat-list {
+    flex-shrink: 0;
+    // width: 0;
+  }
+
+  &__profile-box {
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.6rem;
+
+    & p {
+      font-size: 1.8rem;
+      font-style: italic;
+    }
+  }
+  &__input-box {
+    width: 90%;
+    padding: 1.4rem 0;
+    margin-top: auto;
+  }
+  &__chat-input {
+    // resize: none;
+   
+    border: 2px solid #000;
+    border-radius: 100px;
+    overflow: hidden;
+    padding: 0.2rem 0.4rem;
+    font-size: 2rem !important;
+    margin-left: 2.2rem;
+  }
+
+  &__message-list {
+    padding-top: 1.6rem;
+    &-util{
+      margin-bottom: 2.5rem;
+    }
+  }
+
+  &__empty-chat {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    padding:0 0.7rem;
+
+    &-img {
+      width: 40rem;
+    }
+    & p {
+      font-size: 3.8rem;
+      color: #333;
+      font-weight: 500;
+    }
+  }
+
+  &__icon-toggle{
+    display: none;
+    cursor: pointer;
+    font-size: 3.2rem;
+   @media(max-width:43.75em){
+     display:block
+   }
+   &--active{
+    @media(max-width:43.75em){
+      display:none
+    }
+  }
+  }
+
+  &__offline {
+    text-align: center;
+    & img {
+      width: 100%;
+    }
+    & p {
+      font-size: 1.6rem;
+      line-height: 1.5;
+    }
+  }
+}
+
+.rce-input-textarea {
+padding:10px 0 !important;
+// margin-top: auto;
+height: 40px !important;
+}
