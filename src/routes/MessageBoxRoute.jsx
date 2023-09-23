@@ -71,10 +71,11 @@ export default function MessageBoxRoute() {
       receiverId: receiver.id,
       position: "left",
       read: true,
+      title:sender.name
     });
     setMessage([
       ...message,
-      { position: "left", type: "text", text: inputText },
+      { position: "left", type: "text", text: inputText,title:sender.name },
     ]);
     // setInputText("");
     inputRef.current.value = "";

@@ -133,8 +133,13 @@ export default function Root() {
               setUserisDisconnected,
             }}
           />
+            {/* <footer className="chats-section__footer">
+            <p>Created with love by <a rel="noopener" target="_blank" href="https://eloho-ken.b4a.app">Eloho Kennedy</a></p>
+          </footer> */}
+          <p className="ut-exp">Experimiental</p>
         </div>
       </section>
+      
     </>
   );
 }
