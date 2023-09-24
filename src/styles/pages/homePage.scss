@@ -176,6 +176,9 @@
     width: 90%;
     padding: 1.4rem 0;
     margin-top: auto;
+    @media (max-width:43.75em) {
+      padding:0 0 4.5rem 0;
+    }
   }
   &__chat-input {
     // resize: none;
