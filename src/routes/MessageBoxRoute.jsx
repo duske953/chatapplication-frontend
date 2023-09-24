@@ -35,7 +35,7 @@ export default function MessageBoxRoute() {
   const [inputText, setInputText] = useState("");
   const [userValid, setUserValid] = useState(true);
   const [showSystemMessage, setShowSystemMessage] = useState(false);
-  const [value] = useDebounce(inputText, 1000);
+  const [value] = useDebounce(inputText, 4000);
   const [message, setMessage] = useState([]);
   const {
     messageHeader: { sender, receiver },
@@ -73,12 +73,12 @@ export default function MessageBoxRoute() {
       read: true,
       title:sender.name
     });
+    inputRef.current.value = "";
     setMessage([
       ...message,
       { position: "left", type: "text", text: inputText,title:sender.name },
     ]);
     // setInputText("");
-    inputRef.current.value = "";
   }
 
   useEffect(() => {
@@ -115,7 +115,7 @@ export default function MessageBoxRoute() {
       socket.off("sendAllMessages", handleAllMessages);
       socket.off("userIsTyping", handleUserIsTyping);
     };
-  }, []);
+  }, [params.profile]);
 
   useEffect(() => {
     if (disconnected && disconnectedUser.id === params.profile) {
@@ -146,7 +146,6 @@ export default function MessageBoxRoute() {
       socket.off("send:message", handleSentMessage);
     };
   }, [message, params.profile]);
-  console.log(userValid);
   return (
     <>
       <div className="chats-section__message-box">
@@ -199,7 +198,7 @@ export default function MessageBoxRoute() {
               <Button
                 type="outlined"
                 className="chats-section__msg-send-btn"
-                disabled={inputText.length > 0 ? false : true}
+                disabled={inputRef.current?.value !== "" ? false : true}
                 title="submit"
                 icon={{
                   size: 35,
