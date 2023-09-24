@@ -259,6 +259,11 @@ bottom:0;
 padding:10px 0 !important;
 // margin-top: auto;
 height: 40px !important;
+
+&::-webkit-scrollbar{
+  width: 0px;
+  background: transparent;
+}
 }
 
 .ut-exp{

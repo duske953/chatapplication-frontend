@@ -35,7 +35,7 @@ export default function MessageBoxRoute() {
   const [inputText, setInputText] = useState("");
   const [userValid, setUserValid] = useState(true);
   const [showSystemMessage, setShowSystemMessage] = useState(false);
-  const [value] = useDebounce(inputText, 4000);
+  const [value] = useDebounce(inputText, 1000);
   const [message, setMessage] = useState([]);
   const {
     messageHeader: { sender, receiver },
@@ -121,7 +121,7 @@ export default function MessageBoxRoute() {
     if (disconnected && disconnectedUser.id === params.profile) {
       navigate("/", { replace: true });
     }
-    if (disconnectedUser.id === params.profile && userValid) {
+    if (userValid) {
       setShowSystemMessage(false);
     }
   }, [disconnectedUser, params.profile, userValid]);
@@ -169,7 +169,7 @@ export default function MessageBoxRoute() {
         </div>
         {showSystemMessage && (
           <SystemMessage
-            text={`${disconnectedUser.name} is currently not online and so, Messages can't be delievered at this time`}
+            text={`${receiver.name} is currently not online and so, Messages can't be delievered at this time`}
           />
         )}
         <MessageList
