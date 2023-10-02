@@ -136,7 +136,7 @@ export default function Root() {
             {/* <footer className="chats-section__footer">
             <p>Created with love by <a rel="noopener" target="_blank" href="https://eloho-ken.b4a.app">Eloho Kennedy</a></p>
           </footer> */}
-          <p className="ut-exp">Experimiental</p>
+          <p className="ut-exp">Experimental</p>
         </div>
       </section>
       
