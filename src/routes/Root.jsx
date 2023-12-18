@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, CSSProperties } from "react";
 import useGetActiveUsers from "../Hooks/getActiveUsers";
 import useIsClientAlreadyConnected from "../Hooks/IsClientConnected";
 import useDisconnectedUser from "../Hooks/disconnetedUsers";
@@ -15,6 +15,13 @@ import Profile from "../components/Profile";
 import Offline from "../components/Offline";
 import { CiMenuBurger } from "react-icons/ci";
 import { VscChromeClose } from "react-icons/vsc";
+import { DotLoader } from "react-spinners";
+
+const override = {
+  display: "block",
+  margin: "0 auto",
+  borderColor: "red",
+};
 
 export default function Root() {
   const navigate = useNavigate();
@@ -24,15 +31,17 @@ export default function Root() {
     receiver: null,
   });
 
-  function handleClickNav(e){
-    setToggleNav(!toggleNav)
-   }
-
+  function handleClickNav(e) {
+    setToggleNav(!toggleNav);
+  }
 
   const { getMessage, setGetMessage } = useHandleMessages();
   const [activeUsers, setActiveUsers] = useImmer([]);
-  const [toggleNav, setToggleNav] = useState(false)
-  const { refCurrentUser } = useGetActiveUsers(setActiveUsers, activeUsers);
+  const [toggleNav, setToggleNav] = useState(false);
+  const { refCurrentUser, users } = useGetActiveUsers(
+    setActiveUsers,
+    activeUsers
+  );
   const userIsConnected = useIsClientAlreadyConnected();
   const { userIsDisconnected, setUserisDisconnected } = useDisconnectedUser(
     setActiveUsers,
@@ -95,16 +104,45 @@ export default function Root() {
     });
     navigate(`/chats/${userId}`);
   }
+
+  if (!refCurrentUser.current)
+    return (
+      <div className="server-loading">
+        <p>Please wait while we connect to our servers</p>
+        <DotLoader
+          loading={true}
+          aria-label="loading spinner"
+          size={150}
+          cssOverride={override}
+        />
+      </div>
+    );
   return (
     <>
       <section className="chats-section">
         <div className="chats-section__container">
-        <CiMenuBurger className= {toggleNav ? "chats-section__icon-toggle chats-section__icon-toggle--active" : "chats-section__icon-toggle"} onClick={handleClickNav} />
-          <div className={toggleNav ? "chats-section__ut-cs chats-section__ut-cs--active" : "chats-section__ut-cs"}>
-          <VscChromeClose className="chats-section__icon-close" onClick={() => setToggleNav(!toggleNav)} />
+          <CiMenuBurger
+            className={
+              toggleNav
+                ? "chats-section__icon-toggle chats-section__icon-toggle--active"
+                : "chats-section__icon-toggle"
+            }
+            onClick={handleClickNav}
+          />
+          <div
+            className={
+              toggleNav
+                ? "chats-section__ut-cs chats-section__ut-cs--active"
+                : "chats-section__ut-cs"
+            }
+          >
+            <VscChromeClose
+              className="chats-section__icon-close"
+              onClick={() => setToggleNav(!toggleNav)}
+            />
             <Profile
               img={refCurrentUser.current?.image}
-              name={_.truncate(refCurrentUser.current?.name,{length:"14"})}
+              name={_.truncate(refCurrentUser.current?.name, { length: "14" })}
             />
             <div className="chats-section__category">
               {activeUsers.length !== 0 && (
@@ -133,13 +171,12 @@ export default function Root() {
               setUserisDisconnected,
             }}
           />
-            {/* <footer className="chats-section__footer">
+          {/* <footer className="chats-section__footer">
             <p>Created with love by <a rel="noopener" target="_blank" href="https://eloho-ken.b4a.app">Eloho Kennedy</a></p>
           </footer> */}
           <p className="ut-exp">Experimental</p>
         </div>
       </section>
-      
     </>
   );
 }

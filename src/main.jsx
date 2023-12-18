@@ -7,15 +7,10 @@ import "react-chat-elements/dist/main.css";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "./routes/Root.jsx";
 
-function kenny() {
-  setChatWindowOpen(!chatWindowOpen);
-}
-
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
-    index: <div>ken</div>,
     children: [
       {
         index: true,
