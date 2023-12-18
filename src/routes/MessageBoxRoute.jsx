@@ -71,17 +71,18 @@ export default function MessageBoxRoute() {
       receiverId: receiver.id,
       position: "left",
       read: true,
-      title:sender.name
+      title: sender.name,
     });
     inputRef.current.value = "";
     setMessage([
       ...message,
-      { position: "left", type: "text", text: inputText,title:sender.name },
+      { position: "left", type: "text", text: inputText, title: sender.name },
     ]);
     // setInputText("");
   }
 
   useEffect(() => {
+    socket.emit("getStoredMessages", "msg");
     function handleIsUserStillVald(response) {
       if (response.foundUser === "no-user") return setUserValid(false);
       if (response.foundUser) return setUserValid(true);
