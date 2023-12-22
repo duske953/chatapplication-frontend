@@ -103,18 +103,18 @@ export default function Root() {
     navigate(`/chats/${userId}`);
   }
 
-  if (!refCurrentUser.current)
-    return (
-      <div className="server-loading">
-        <p>Please wait while we connect to our servers</p>
-        <DotLoader
-          loading={true}
-          aria-label="loading spinner"
-          size={150}
-          cssOverride={override}
-        />
-      </div>
-    );
+  // if (!refCurrentUser.current)
+  //   return (
+  //     <div className="server-loading">
+  //       <p>Please wait while we connect to our servers</p>
+  //       <DotLoader
+  //         loading={true}
+  //         aria-label="loading spinner"
+  //         size={150}
+  //         cssOverride={override}
+  //       />
+  //     </div>
+  //   );
   return (
     <>
       <section className="chats-section">
