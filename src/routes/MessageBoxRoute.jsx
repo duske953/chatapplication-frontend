@@ -103,6 +103,7 @@ export default function MessageBoxRoute() {
   }, [value]);
 
   useEffect(() => {
+    alert("hi");
     socket.connect();
     function handleAllMessages(msg) {
       console.log(msg);
