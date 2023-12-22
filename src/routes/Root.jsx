@@ -14,7 +14,7 @@ import Profile from "../components/Profile";
 import Offline from "../components/Offline";
 import { CiMenuBurger } from "react-icons/ci";
 import { VscChromeClose } from "react-icons/vsc";
-
+import { DotLoader } from "react-spinners";
 const override = {
   display: "block",
   margin: "0 auto",
