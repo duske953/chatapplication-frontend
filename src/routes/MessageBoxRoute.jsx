@@ -82,7 +82,6 @@ export default function MessageBoxRoute() {
   }
 
   useEffect(() => {
-    socket.emit("getStoredMessages", "msg");
     function handleIsUserStillVald(response) {
       if (response.foundUser === "no-user") return setUserValid(false);
       if (response.foundUser) return setUserValid(true);
@@ -104,6 +103,7 @@ export default function MessageBoxRoute() {
   }, [value]);
 
   useEffect(() => {
+    socket.connect();
     function handleAllMessages(msg) {
       setMessage(filterMessagesData(msg.messageData, params, msg.currentUser));
     }
@@ -114,6 +114,7 @@ export default function MessageBoxRoute() {
     socket.on("userIsTyping", handleUserIsTyping);
     return () => {
       socket.off("sendAllMessages", handleAllMessages);
+      socket.disconnect();
       socket.off("userIsTyping", handleUserIsTyping);
     };
   }, [params.profile]);
@@ -127,15 +128,15 @@ export default function MessageBoxRoute() {
     }
   }, [disconnectedUser, params.profile, userValid]);
 
-  useEffect(() => {
-    function handleAllMessages(messageData) {
-      setMessage(filterMessagesData(messageData, params, sender));
-    }
-    socket.on("sendMessages", handleAllMessages);
-    return () => {
-      socket.off("sendMessages", handleAllMessages);
-    };
-  }, [params.profile, receiver, sender]);
+  // useEffect(() => {
+  //   function handleAllMessages(messageData) {
+  //     setMessage(filterMessagesData(messageData, params, sender));
+  //   }
+  //   socket.on("sendMessages", handleAllMessages);
+  //   return () => {
+  //     socket.off("sendMessages", handleAllMessages);
+  //   };
+  // }, [params.profile, receiver, sender]);
 
   useEffect(() => {
     function handleSentMessage(msg) {

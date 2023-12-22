@@ -1,11 +1,10 @@
-import { useEffect, useState, CSSProperties } from "react";
+import { useEffect, useState } from "react";
 import useGetActiveUsers from "../Hooks/getActiveUsers";
 import useIsClientAlreadyConnected from "../Hooks/IsClientConnected";
 import useDisconnectedUser from "../Hooks/disconnetedUsers";
 import useHandleMessages from "../Hooks/handleMessages";
 import _ from "lodash";
 import { v4 as uuidv4 } from "uuid";
-import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { useImmer } from "use-immer";
 import ChatsList from "../components/ChatsList";
 import { Outlet, useParams, useNavigate } from "react-router-dom";
@@ -49,12 +48,12 @@ export default function Root() {
   );
   const params = useParams();
   useEffect(() => {
-    function handleSendAllMessages({ messageAttr, messageData }) {
+    function handleSendAllMessages({ messageAttr }) {
       setGetMessage(messageAttr);
     }
-    socket.on("sendAllMessages", handleSendAllMessages);
+    socket.on("sendMessageAttr", handleSendAllMessages);
     return () => {
-      socket.off("sendAllMessages", handleSendAllMessages);
+      socket.off("sendMessageAttr", handleSendAllMessages);
     };
   }, []);
 
@@ -90,7 +89,7 @@ export default function Root() {
   function handleChatClick(userId) {
     const matchMedia = window.matchMedia("(max-width:43.75em)");
     matchMedia.matches && setToggleNav(!toggleNav);
-    socket.emit("getStoredMessages", "msg");
+    // socket.emit("getStoredMessages", "msg");
     const receiver = activeUsers.find((ele, i) => ele.id === userId);
     setMessageHeader({
       sender: refCurrentUser.current,
