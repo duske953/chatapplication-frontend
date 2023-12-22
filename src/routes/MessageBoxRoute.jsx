@@ -103,8 +103,14 @@ export default function MessageBoxRoute() {
   }, [value]);
 
   useEffect(() => {
-    alert("hi");
     socket.connect();
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     function handleAllMessages(msg) {
       console.log(msg);
       setMessage(filterMessagesData(msg.messageData, params, msg.currentUser));
@@ -115,7 +121,6 @@ export default function MessageBoxRoute() {
     socket.on("sendAllMessages", handleAllMessages);
     socket.on("userIsTyping", handleUserIsTyping);
     return () => {
-      socket.disconnect();
       socket.off("sendAllMessages", handleAllMessages);
       socket.off("userIsTyping", handleUserIsTyping);
     };
