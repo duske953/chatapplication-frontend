@@ -14,7 +14,6 @@ import Profile from "../components/Profile";
 import Offline from "../components/Offline";
 import { CiMenuBurger } from "react-icons/ci";
 import { VscChromeClose } from "react-icons/vsc";
-import { DotLoader } from "react-spinners";
 
 const override = {
   display: "block",
@@ -104,18 +103,18 @@ export default function Root() {
     navigate(`/chats/${userId}`);
   }
 
-  // if (!refCurrentUser.current)
-  //   return (
-  //     <div className="server-loading">
-  //       <p>Please wait while we connect to our servers</p>
-  //       <DotLoader
-  //         loading={true}
-  //         aria-label="loading spinner"
-  //         size={150}
-  //         cssOverride={override}
-  //       />
-  //     </div>
-  //   );
+  if (!refCurrentUser.current)
+    return (
+      <div className="server-loading">
+        <p>Please wait while we connect to our servers</p>
+        <DotLoader
+          loading={true}
+          aria-label="loading spinner"
+          size={150}
+          cssOverride={override}
+        />
+      </div>
+    );
   return (
     <>
       <section className="chats-section">
