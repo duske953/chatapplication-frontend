@@ -1,5 +1,6 @@
-import _ from "lodash";
-import { ChatList } from "react-chat-elements";
+/* eslint-disable react/prop-types */
+import _ from 'lodash';
+import { ChatList } from 'react-chat-elements';
 export default function ChatsList(props) {
   return (
     <>
@@ -21,7 +22,7 @@ export default function ChatsList(props) {
               .filter((ele, i) => ele.id === props.id)
               .map((ele, i) => _.truncate(ele.msg.slice(-1)[0].text))[0],
 
-            statusColor: props.active ? "green" : "red",
+            statusColor: props.active ? 'green' : 'red',
             avatarFlexible: true,
           },
         ]}

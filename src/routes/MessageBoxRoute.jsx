@@ -1,29 +1,29 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef } from 'react';
 import {
   Form,
   useNavigate,
   useOutletContext,
   useParams,
-} from "react-router-dom";
-import { MessageList } from "react-chat-elements";
-import { Input } from "react-chat-elements";
-import { Button } from "react-chat-elements";
-import { useDebounce } from "use-debounce";
-import { socket } from "../socket";
-import { AiOutlineSend } from "react-icons/ai";
-import { SystemMessage } from "react-chat-elements";
+} from 'react-router-dom';
+import { MessageList } from 'react-chat-elements';
+import { Input } from 'react-chat-elements';
+import { Button } from 'react-chat-elements';
+import { useDebounce } from 'use-debounce';
+import { socket } from '../socket';
+import { AiOutlineSend } from 'react-icons/ai';
+import { SystemMessage } from 'react-chat-elements';
 
 function filterMessagesData(messageData, params, sender) {
   return messageData
     .filter(
-      (ele, i) =>
+      (ele) =>
         ele.senderId === params.profile || ele.receiverId === params.profile
     )
-    .map((ele, i) => {
+    .map((ele) => {
       return {
         type: ele.type,
         text: ele.text,
-        position: ele.senderId === sender?.id ? "left" : "right",
+        position: ele.senderId === sender?.id ? 'left' : 'right',
         title: ele.title,
       };
     });
@@ -32,7 +32,7 @@ function filterMessagesData(messageData, params, sender) {
 export default function MessageBoxRoute() {
   const params = useParams();
   const navigate = useNavigate();
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState('');
   const [userValid, setUserValid] = useState(true);
   const [showSystemMessage, setShowSystemMessage] = useState(false);
   const [value] = useDebounce(inputText, 1000);
@@ -40,7 +40,6 @@ export default function MessageBoxRoute() {
   const {
     messageHeader: { sender, receiver },
     userIsDisconnected: { disconnectedUser, active, disconnected },
-    setUserisDisconnected,
   } = useOutletContext();
   const [typing, setIsTyping] = useState({
     typing: false,
@@ -48,7 +47,7 @@ export default function MessageBoxRoute() {
   });
   const inputRef = useRef(null);
   function handleChange(e) {
-    socket.emit("userIsTyping", {
+    socket.emit('userIsTyping', {
       sid: sender?.id,
       rid: receiver?.id,
       typing: true,
@@ -56,7 +55,7 @@ export default function MessageBoxRoute() {
     setInputText(e.target.value);
   }
 
-  function handleSubmit(e) {
+  function handleSubmit() {
     if (
       (disconnectedUser.id === params.profile && active === false) ||
       userValid === false
@@ -64,97 +63,81 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
-    socket.emit("send:message", {
-      type: "text",
+    socket.emit('send:message', {
+      type: 'text',
       text: inputText,
       senderId: sender.id,
       receiverId: receiver.id,
-      position: "left",
+      position: 'left',
       read: true,
       title: sender.name,
     });
-    inputRef.current.value = "";
+    inputRef.current.value = '';
     setMessage([
       ...message,
-      { position: "left", type: "text", text: inputText, title: sender.name },
+      { position: 'left', type: 'text', text: inputText, title: sender.name },
     ]);
-    // setInputText("");
   }
-
-  useEffect(() => {
-    function handleIsUserStillVald(response) {
-      if (response.foundUser === "no-user") return setUserValid(false);
-      if (response.foundUser) return setUserValid(true);
-    }
-    socket.emit("isUserStillValid", params.profile);
-    socket.on("response:userIsStillValid", handleIsUserStillVald);
-
-    return () => {
-      socket.off("response:userIsStillValid", handleIsUserStillVald);
-    };
-  }, [params.profile, active]);
-
-  useEffect(() => {
-    socket.emit("userIsTyping", {
-      sid: sender?.id,
-      rid: receiver?.id,
-      typing: false,
-    });
-  }, [value]);
-
-  useEffect(() => {
-    socket.connect();
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
-  useEffect(() => {
-    function handleAllMessages(msg) {
-      console.log(msg);
-      setMessage(filterMessagesData(msg.messageData, params, msg.currentUser));
-    }
-    function handleUserIsTyping(msg) {
-      setIsTyping(msg);
-    }
-    socket.on("sendAllMessages", handleAllMessages);
-    socket.on("userIsTyping", handleUserIsTyping);
-    return () => {
-      socket.off("sendAllMessages", handleAllMessages);
-      socket.off("userIsTyping", handleUserIsTyping);
-    };
-  }, [params.profile]);
-
-  useEffect(() => {
-    if (disconnected && disconnectedUser.id === params.profile) {
-      navigate("/", { replace: true });
-    }
-    if (userValid) {
-      setShowSystemMessage(false);
-    }
-  }, [disconnectedUser, params.profile, userValid]);
-
-  // useEffect(() => {
-  //   function handleAllMessages(messageData) {
-  //     setMessage(filterMessagesData(messageData, params, sender));
-  //   }
-  //   socket.on("sendMessages", handleAllMessages);
-  //   return () => {
-  //     socket.off("sendMessages", handleAllMessages);
-  //   };
-  // }, [params.profile, receiver, sender]);
 
   useEffect(() => {
     function handleSentMessage(msg) {
       if (msg.senderId === params.profile)
-        setMessage([...message, { ...msg, position: "right" }]);
+        setMessage([...message, { ...msg, position: 'right' }]);
     }
-    socket.on("send:message", handleSentMessage);
+    socket.on('send:message', handleSentMessage);
     return () => {
-      socket.off("send:message", handleSentMessage);
+      socket.off('send:message', handleSentMessage);
     };
   }, [message, params.profile]);
+
+  useEffect(() => {
+    function handleAllMessages(msg) {
+      setMessage(filterMessagesData(msg.messageData, params, msg.currentUser));
+    }
+    socket.emit('fetchAllMessages');
+    socket.on('sendAllMessages', handleAllMessages);
+    return () => socket.off('sendAllMessages', handleAllMessages);
+  }, [params]);
+
+  useEffect(() => {
+    function handleIsUserStillVald(response) {
+      if (response.foundUser === 'no-user') return setUserValid(false);
+      if (response.foundUser) return setUserValid(true);
+    }
+    socket.emit('isUserStillValid', params.profile);
+    socket.on('response:userIsStillValid', handleIsUserStillVald);
+
+    return () => {
+      socket.off('response:userIsStillValid', handleIsUserStillVald);
+    };
+  }, [params.profile, active]);
+
+  useEffect(() => {
+    socket.emit('userIsTyping', {
+      sid: sender?.id,
+      rid: receiver?.id,
+      typing: false,
+    });
+  }, [value, receiver, sender]);
+
+  useEffect(() => {
+    function handleUserIsTyping(msg) {
+      setIsTyping(msg);
+    }
+
+    socket.on('userIsTyping', handleUserIsTyping);
+    return () => socket.off('userIsTyping', handleUserIsTyping);
+  });
+
+  useEffect(() => {
+    if (disconnected && disconnectedUser.id === params.profile) {
+      navigate('/', { replace: true });
+    }
+    if (userValid) {
+      setShowSystemMessage(false);
+    }
+  }, [disconnectedUser, params.profile, userValid, disconnected, navigate]);
+
   return (
     <>
       <div className="chats-section__message-box">
@@ -169,10 +152,10 @@ export default function MessageBoxRoute() {
             <p>
               {(disconnectedUser.id === params.profile && active === false) ||
               userValid === false
-                ? "Offline"
+                ? 'Offline'
                 : typing.typing && typing.sid === params.profile
-                ? "Typing"
-                : "Active now"}
+                ? 'Typing'
+                : 'Active now'}
             </p>
           </div>
         </div>
@@ -184,7 +167,7 @@ export default function MessageBoxRoute() {
         <MessageList
           className="chats-section__message-list"
           lockable={true}
-          toBottomHeight={"100%"}
+          toBottomHeight={'100%'}
           dataSource={message}
         />
         <Form
@@ -200,18 +183,18 @@ export default function MessageBoxRoute() {
             className="chats-section__chat-input"
             minHeight={30}
             inputStyle={{
-              fontSize: "2rem",
-              height: "44px",
+              fontSize: '2rem',
+              height: '44px',
             }}
             rightButtons={
               <Button
                 type="outlined"
                 className="chats-section__msg-send-btn"
-                disabled={inputRef.current?.value !== "" ? false : true}
+                disabled={inputRef.current?.value !== '' ? false : true}
                 title="submit"
                 icon={{
                   size: 35,
-                  float: "right",
+                  float: 'right',
                   component: <AiOutlineSend />,
                 }}
               />
