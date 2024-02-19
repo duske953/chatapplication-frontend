@@ -41,6 +41,8 @@ export default function Root() {
     setActiveUsers
   );
 
+  console.log(messages);
+
   useEffect(() => {
     setActiveUsers((draft) => {
       draft?.sort((a, b) => {
