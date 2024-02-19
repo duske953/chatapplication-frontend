@@ -13,6 +13,7 @@ import { socket } from '../socket';
 import { AiOutlineSend } from 'react-icons/ai';
 import { SystemMessage } from 'react-chat-elements';
 import { CiMenuBurger } from 'react-icons/ci';
+import moment from 'moment';
 
 export default function MessageBoxRoute() {
   const params = useParams();
@@ -59,7 +60,7 @@ export default function MessageBoxRoute() {
       receiverId: receiver.id,
       position: 'left',
       read: true,
-      time: new Date().toLocaleString(),
+      time: moment().toString(),
       title: sender.name,
     });
     inputRef.current.value = '';
