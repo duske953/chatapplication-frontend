@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { socket } from "../socket";
+import { useEffect, useState } from 'react';
+import { socket } from '../socket';
 
 export default function useDisconnectedUser(setActiveUsers) {
   const [userIsDisconnected, setUserisDisconnected] = useState({
@@ -20,7 +20,7 @@ export default function useDisconnectedUser(setActiveUsers) {
         });
       }
       setActiveUsers((draft) => {
-        const foundUser = draft.find((ele, i) => ele.id === user.id);
+        const foundUser = draft.find((ele) => ele.id === user.id);
         if (!foundUser) {
           // setUserisDisconnected({ ...userIsDisconnected, active: false });
           return draft;
@@ -28,9 +28,9 @@ export default function useDisconnectedUser(setActiveUsers) {
         foundUser.active = active;
       });
     }
-    socket.on("user:disconnected", handleDisconnectedUser);
+    socket.on('user:disconnected', handleDisconnectedUser);
     return () => {
-      socket.off("user:disconnected", handleDisconnectedUser);
+      socket.off('user:disconnected', handleDisconnectedUser);
     };
   }, []);
   return { userIsDisconnected, setUserisDisconnected };

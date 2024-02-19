@@ -1,10 +1,11 @@
-@use "../abstracts/variables" as v;
-@use "../abstracts/mixins" as m;
+@use '../abstracts/variables' as v;
+@use '../abstracts/mixins' as m;
 .chats-section {
+  position: relative;
   &__container {
     display: grid;
     @media (max-width: 43.75em) {
-      display: initial;
+      display: block;
     }
     grid-template-columns: 25rem auto;
     height: 100vh;
@@ -88,10 +89,15 @@
     font-size: 1.6rem;
   }
   &__ut-cs {
+    position: sticky;
+    height: 100%;
+    // width: 25%;
     border-right: 2px solid v.$primary-grey-color;
     transition: all 0.3s ease-in-out;
+    z-index: 1000;
     @media (max-width: 43.75em) {
-      position: absolute;
+      position: fixed;
+      top: 0;
       width: 70%;
       background-color: #f8f9fa;
       height: 100vh;
@@ -111,12 +117,19 @@
 
   &__message-box {
     position: relative;
+    overflow-y: auto;
+    height: 80%;
     display: flex;
+    grid-column: 2/-1;
     flex-direction: column;
+    -ms-overflow-style: none; /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
     @media (max-width: 43.75em) {
-      position: absolute;
-      width: 100%;
-      height: 100%;
+      // height: 85%;
     }
   }
 
@@ -134,9 +147,17 @@
   &__chat-receiver {
     @include m.Flex(center, row);
     gap: v.$sm-flex-gap;
+    background-color: #f8f9fa;
     padding: 2.4rem 0 1.8rem 2.2rem;
     padding-bottom: 1.6rem;
     border-bottom: 2px solid v.$primary-grey-color;
+    position: sticky;
+    width: 100%;
+    top: 0;
+
+    @media (max-width: 43.75em) {
+      padding-left: 6rem;
+    }
 
     &-details p:first-child {
       font-size: 1.8rem;
@@ -162,7 +183,6 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    border-bottom: 1px solid #333;
     padding-bottom: 0.6rem;
 
     & p {
@@ -171,11 +191,18 @@
     }
   }
   &__input-box {
-    width: 90%;
+    position: fixed;
+    bottom: 0;
+    width: 77%;
     padding: 1.4rem 0;
     margin-top: auto;
+
+    @media (max-width: 62.5em) {
+      width: 60%;
+    }
+
     @media (max-width: 43.75em) {
-      padding: 0 0 4.5rem 0;
+      width: 88%;
     }
   }
   &__chat-input {
@@ -190,23 +217,34 @@
   }
 
   &__message-list {
-    padding-top: 1.6rem;
+    // position: absolute !important;
+    // bottom: 0;
+    // position: absolute !important;
+    // top: 10rem;
+    padding-top: 2rem;
+    z-index: -1;
+    width: 100%;
     &-util {
       margin-bottom: 2.5rem;
     }
   }
 
   &__empty-chat {
+    // width: 100%;
+    // left: 50%;
+    height: 100%;
+    // transform: translateX(-50%);
     display: flex;
-    align-items: center;
+    // align-items: center;
     flex-direction: column;
     justify-content: center;
     text-align: center;
-    height: 100vh;
+    // height: 100vh;
     padding: 0 0.7rem;
 
     &-img {
       width: 40rem;
+      margin: 0 auto;
     }
     & p {
       font-size: 3.8rem;
@@ -217,10 +255,15 @@
 
   &__icon-toggle {
     display: none;
+    transform: translateY(-50%);
+    top: 50%;
+    left: 0;
     cursor: pointer;
+    position: absolute;
     font-size: 3.2rem;
     @media (max-width: 43.75em) {
       display: block;
+      z-index: 1000;
     }
     &--active {
       @media (max-width: 43.75em) {

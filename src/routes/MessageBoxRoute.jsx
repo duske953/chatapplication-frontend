@@ -12,22 +12,7 @@ import { useDebounce } from 'use-debounce';
 import { socket } from '../socket';
 import { AiOutlineSend } from 'react-icons/ai';
 import { SystemMessage } from 'react-chat-elements';
-
-function filterMessagesData(messageData, params, sender) {
-  return messageData
-    .filter(
-      (ele) =>
-        ele.senderId === params.profile || ele.receiverId === params.profile
-    )
-    .map((ele) => {
-      return {
-        type: ele.type,
-        text: ele.text,
-        position: ele.senderId === sender?.id ? 'left' : 'right',
-        title: ele.title,
-      };
-    });
-}
+import { CiMenuBurger } from 'react-icons/ci';
 
 export default function MessageBoxRoute() {
   const params = useParams();
@@ -36,10 +21,13 @@ export default function MessageBoxRoute() {
   const [userValid, setUserValid] = useState(true);
   const [showSystemMessage, setShowSystemMessage] = useState(false);
   const [value] = useDebounce(inputText, 1000);
-  const [message, setMessage] = useState([]);
   const {
     messageHeader: { sender, receiver },
     userIsDisconnected: { disconnectedUser, active, disconnected },
+    messages,
+    elemRef,
+    toggleNav,
+    handleClickNav,
   } = useOutletContext();
   const [typing, setIsTyping] = useState({
     typing: false,
@@ -63,6 +51,7 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
+
     socket.emit('send:message', {
       type: 'text',
       text: inputText,
@@ -70,34 +59,11 @@ export default function MessageBoxRoute() {
       receiverId: receiver.id,
       position: 'left',
       read: true,
+      time: new Date().toLocaleString(),
       title: sender.name,
     });
     inputRef.current.value = '';
-    setMessage([
-      ...message,
-      { position: 'left', type: 'text', text: inputText, title: sender.name },
-    ]);
   }
-
-  useEffect(() => {
-    function handleSentMessage(msg) {
-      if (msg.senderId === params.profile)
-        setMessage([...message, { ...msg, position: 'right' }]);
-    }
-    socket.on('send:message', handleSentMessage);
-    return () => {
-      socket.off('send:message', handleSentMessage);
-    };
-  }, [message, params.profile]);
-
-  useEffect(() => {
-    function handleAllMessages(msg) {
-      setMessage(filterMessagesData(msg.messageData, params, msg.currentUser));
-    }
-    socket.emit('fetchAllMessages');
-    socket.on('sendAllMessages', handleAllMessages);
-    return () => socket.off('sendAllMessages', handleAllMessages);
-  }, [params]);
 
   useEffect(() => {
     function handleIsUserStillVald(response) {
@@ -122,7 +88,7 @@ export default function MessageBoxRoute() {
 
   useEffect(() => {
     function handleUserIsTyping(msg) {
-      setIsTyping(msg);
+      return setIsTyping(msg);
     }
 
     socket.on('userIsTyping', handleUserIsTyping);
@@ -140,7 +106,7 @@ export default function MessageBoxRoute() {
 
   return (
     <>
-      <div className="chats-section__message-box">
+      <div ref={elemRef} className="chats-section__message-box">
         <div className="chats-section__chat-receiver">
           <img
             src={receiver?.image}
@@ -158,6 +124,14 @@ export default function MessageBoxRoute() {
                 : 'Active now'}
             </p>
           </div>
+          <CiMenuBurger
+            className={
+              toggleNav
+                ? 'chats-section__icon-toggle chats-section__icon-toggle--active'
+                : 'chats-section__icon-toggle'
+            }
+            onClick={handleClickNav}
+          />
         </div>
         {showSystemMessage && (
           <SystemMessage
@@ -166,9 +140,9 @@ export default function MessageBoxRoute() {
         )}
         <MessageList
           className="chats-section__message-list"
-          lockable={true}
-          toBottomHeight={'100%'}
-          dataSource={message}
+          lockable={false}
+          toBottomHeight={300}
+          dataSource={messages}
         />
         <Form
           className="chats-section__input-box"

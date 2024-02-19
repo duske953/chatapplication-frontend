@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react';
 import useGetActiveUsers from '../Hooks/getActiveUsers';
 import useIsClientAlreadyConnected from '../Hooks/IsClientConnected';
 import useDisconnectedUser from '../Hooks/disconnetedUsers';
-import useHandleMessages from '../Hooks/handleMessages';
-import _ from 'lodash';
+import _, { set } from 'lodash';
 import { v4 as uuidv4 } from 'uuid';
 import { useImmer } from 'use-immer';
 import ChatsList from '../components/ChatsList';
@@ -12,8 +11,10 @@ import { socket } from '../socket';
 import DisplayPopup from '../components/Popup';
 import Profile from '../components/Profile';
 import Offline from '../components/Offline';
-import { CiMenuBurger } from 'react-icons/ci';
+import useHandleMessages from '../Hooks/handleMessages';
+import ClipLoader from 'react-spinners/ClipLoader';
 import { VscChromeClose } from 'react-icons/vsc';
+
 export default function Root() {
   const navigate = useNavigate();
 
@@ -26,7 +27,6 @@ export default function Root() {
     setToggleNav(!toggleNav);
   }
 
-  const { getMessage, setGetMessage } = useHandleMessages();
   const [activeUsers, setActiveUsers] = useImmer([]);
   const [toggleNav, setToggleNav] = useState(false);
   const { refCurrentUser } = useGetActiveUsers(setActiveUsers, activeUsers);
@@ -36,16 +36,27 @@ export default function Root() {
     activeUsers
   );
   const params = useParams();
+  const { messageAttr, messages, setMessageAttr, elemRef } = useHandleMessages(
+    refCurrentUser,
+    setActiveUsers
+  );
+
   useEffect(() => {
-    socket.emit('fetchAllMessages');
-    function handleSendAllMessages({ messageAttr }) {
-      setGetMessage(messageAttr);
-    }
-    socket.once('sendAllMessages', handleSendAllMessages);
-    return () => {
-      socket.off('sendAllMessages', handleSendAllMessages);
-    };
-  }, [setGetMessage]);
+    setActiveUsers((draft) => {
+      draft?.sort((a, b) => {
+        let objA = messageAttr.findLast(
+          (ele) => ele.senderId === a.id && ele.new
+        );
+        let objB = messageAttr.findLast(
+          (ele) => ele.senderId === b.id && ele.new
+        );
+        if (objA && !objB) return -1;
+        if (objA?.time > objB?.time) return -1;
+        if (objB?.time > objA?.time) return 1;
+        return 0;
+      });
+    });
+  }, [messageAttr, setActiveUsers]);
 
   useEffect(() => {
     socket.emit('isUserStillValid', params.profile);
@@ -65,18 +76,25 @@ export default function Root() {
   }, [params.profile, navigate, refCurrentUser]);
 
   useEffect(() => {
-    setActiveUsers((draft) => {
-      draft?.sort((a, b) => {
-        let objA = getMessage.find((ele) => ele.id === a.id);
-        let objB = getMessage.find((ele) => ele.id === b.id);
-        if (objA?.new && !objB?.new) return -1;
-        if (!objA?.new && objB?.new) return 1;
-        return 0;
-      });
-    });
-  }, [getMessage, setActiveUsers]);
+    function handleServerFull() {
+      setServerFull(true);
+    }
+
+    socket.on('server:full', handleServerFull);
+    return () => socket.off('server:full', handleServerFull);
+  });
 
   function handleChatClick(userId) {
+    setMessageAttr((attr) => {
+      return attr.map((ele) => {
+        if (ele.senderId === userId) {
+          socket.emit('seen:message', { id: ele.senderId, new: false });
+          return { ...ele, new: false };
+        }
+        return ele;
+      });
+    });
+
     const matchMedia = window.matchMedia('(max-width:43.75em)');
     matchMedia.matches && setToggleNav(!toggleNav);
     const receiver = activeUsers.find((ele) => ele.id === userId);
@@ -84,40 +102,27 @@ export default function Root() {
       sender: refCurrentUser.current,
       receiver,
     });
-    const foundUser = getMessage.findIndex((ele) => ele.id === userId);
-    console.log(getMessage);
-    setGetMessage((draft) => {
-      draft[foundUser]?.msg
-        .filter((ele) => ele.read === false)
-        .forEach((ele) => (ele.read = true));
-    });
+
     navigate(`/chats/${userId}`);
   }
 
-  // if (!refCurrentUser.current)
-  //   return (
-  //     <div className="server-loading">
-  //       <p>Please wait while we connect to our servers</p>
-  //       <DotLoader
-  //         loading={true}
-  //         aria-label="loading spinner"
-  //         size={150}
-  //         cssOverride={override}
-  //       />
-  //     </div>
-  //   );
+  if (!refCurrentUser.current)
+    return (
+      <div className="server-loading">
+        <p>Please wait while we connect to our servers</p>
+        <ClipLoader
+          loading={true}
+          size={150}
+          aria-label="Loading Spinner"
+          data-testid="loader"
+        />
+      </div>
+    );
+
   return (
     <>
       <section className="chats-section">
         <div className="chats-section__container">
-          <CiMenuBurger
-            className={
-              toggleNav
-                ? 'chats-section__icon-toggle chats-section__icon-toggle--active'
-                : 'chats-section__icon-toggle'
-            }
-            onClick={handleClickNav}
-          />
           <div
             className={
               toggleNav
@@ -143,7 +148,7 @@ export default function Root() {
               {activeUsers.map((e) => (
                 <ChatsList
                   {...e}
-                  getMessage={getMessage}
+                  getMessage={messageAttr}
                   key={uuidv4()}
                   handleChatClick={handleChatClick}
                 />
@@ -158,6 +163,11 @@ export default function Root() {
               messageHeader,
               userIsDisconnected,
               setUserisDisconnected,
+              messages,
+              elemRef,
+              toggleNav,
+              handleClickNav,
+              refCurrentUser,
             }}
           />
           {/* <footer className="chats-section__footer">

@@ -1,60 +1,124 @@
-import { socket } from "../socket";
-import { useEffect, useRef, useState } from "react";
-import { useImmer } from "use-immer";
-import { useParams } from "react-router-dom";
+import { socket } from '../socket';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import arraySort from 'array-sort';
+import { useRef } from 'react';
+import { useLayoutEffect } from 'react';
 
-function isChatActive(param, messages) {
-  return param.profile === messages.senderId;
+function filterSentMessages(msg, refCurrentUser, profile) {
+  return msg.filter(
+    (ele) =>
+      ele.receiverId === profile && refCurrentUser.current.id === ele.senderId
+  );
 }
 
-export default function useHandleMessages() {
-  const param = useParams();
-  let refLatestMessage = useRef(null);
-  const [getMessage, setGetMessage] = useImmer([]);
-  useEffect(() => {
-    function handleReceivedMessages({ messages, sid }) {
-      socket.emit("messageData", messages);
-      const chatActive = isChatActive(param, messages);
-      if (chatActive) {
-        messages.read = true;
-      }
-      if (getMessage.length === 0) {
-        return setGetMessage((draft) => {
-          draft.push({
-            new: chatActive ? false : true,
-            id: sid,
-            msg: [messages],
-          });
-        });
-      }
-      if (getMessage.length !== 0) {
-        const index = getMessage.findIndex((ele, i) => ele.id === sid);
-        if (index === -1) {
-          return setGetMessage((draft) => {
-            draft.forEach((ele, i) => (ele.new = false));
-            draft.push({
-              new: chatActive ? false : true,
-              id: sid,
-              msg: [messages],
-            });
-          });
-        } else {
-          return setGetMessage((draft) => {
-            draft.forEach((ele, i) => (ele.new = false));
-            draft[index].new = chatActive ? false : true;
-            draft[index].msg.push(messages);
-          });
-        }
-      }
-    }
-    socket.emit("receivedMessageAttr", {
-      getMessage,
-    });
+function filterReceivedMessages(msg, refCurrentUser, profile) {
+  return msg.filter(
+    (ele) =>
+      ele.receiverId === refCurrentUser.current.id && ele.senderId === profile
+  );
+}
 
-    socket.on("messageAttr", handleReceivedMessages);
+export default function useHandleMessages(refCurrentUser, setActiveUsers) {
+  const params = useParams();
+  const [sentMessage, setSentMessage] = useState([]);
+  const [receivedMessage, setReceivedMessage] = useState([]);
+  const [messageAttr, setMessageAttr] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const timeRef = useRef(null);
+  const elemRef = useRef(null);
+
+  useEffect(() => {}, []);
+
+  useEffect(() => {
+    function handleAllMessages(msg) {
+      setSentMessage(
+        filterSentMessages(msg.sentMessages, refCurrentUser, params.profile)
+      );
+
+      setReceivedMessage(
+        filterReceivedMessages(
+          msg.receivedMessages,
+          refCurrentUser,
+          params.profile
+        )
+      );
+      setMessageAttr(msg.messageAttr);
+      timeRef.current = setTimeout(() => {
+        elemRef.current?.scroll({
+          top: elemRef.current.scrollHeight,
+          behavior: 'instant',
+        });
+      }, 13);
+    }
+    socket.emit('fetchAllMessages');
+    socket.on('sendAllMessages', handleAllMessages);
     return () => {
-      socket.off("messageAttr", handleReceivedMessages);
+      socket.off('sendAllMessages', handleAllMessages);
+      clearTimeout(timeRef.current);
     };
-  }, [getMessage, param.profile]);
-  return { getMessage, setGetMessage, refLatestMessage };
+  }, [params.profile, refCurrentUser]);
+
+  useEffect(() => {
+    const concatArray = filterSentMessages(
+      sentMessage,
+      refCurrentUser,
+      params.profile
+    ).concat(
+      filterReceivedMessages(receivedMessage, refCurrentUser, params.profile)
+    );
+    setMessages(arraySort(concatArray, 'time'));
+  }, [sentMessage, receivedMessage, params.profile, refCurrentUser]);
+
+  useEffect(() => {
+    function handleReceivedMessage(msg) {
+      setActiveUsers((users) => {
+        return users.map((ele) => {
+          if (ele.id === msg.senderId) {
+            return {
+              ...ele,
+              msgSent: ele.id === params.profile ? false : true,
+            };
+          }
+          return { ...ele, msgSent: false };
+        });
+      });
+      socket.emit('received:message', {
+        msg: { ...msg },
+        messageAttr: {
+          ...msg,
+          new: msg.senderId === params.profile ? false : true,
+        },
+      });
+      setMessageAttr([
+        ...messageAttr,
+        { ...msg, new: msg.senderId === params.profile ? false : true },
+      ]);
+      return setReceivedMessage([...receivedMessage, { ...msg, new: true }]);
+    }
+
+    socket.on('received:message', handleReceivedMessage);
+    return () => {
+      socket.off('received:message', handleReceivedMessage);
+    };
+  }, [receivedMessage, setActiveUsers, params.profile, messageAttr]);
+
+  useEffect(() => {
+    function handleSentMessage({ msg }) {
+      setSentMessage(msg);
+      timeRef.current = setTimeout(() => {
+        elemRef.current?.scroll({
+          top: elemRef.current.scrollHeight,
+          behavior: 'smooth',
+        });
+      }, 10);
+    }
+    socket.on('sent:message', handleSentMessage);
+    return () => {
+      socket.off('sent:message', handleSentMessage);
+      clearTimeout(timeRef.current);
+    };
+  }, []);
+
+  return { messageAttr, messages, setMessageAttr, elemRef };
 }

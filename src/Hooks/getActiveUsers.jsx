@@ -1,10 +1,7 @@
-import { useEffect, useRef } from "react";
-import { Navigate } from "react-router-dom";
-import { socket } from "../socket";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useRef } from 'react';
+import { socket } from '../socket';
 
 export default function useGetActiveUsers(setActiveUsers, activeUsers) {
-  const navigate = useNavigate();
   useEffect(() => {
     socket.connect();
 
@@ -15,19 +12,19 @@ export default function useGetActiveUsers(setActiveUsers, activeUsers) {
 
   let refCurrentUser = useRef(null);
   useEffect(() => {
-    function getActiveUsers({ users, foundClient }) {
+    function getActiveUsers({ users }) {
       refCurrentUser.current = users.find(
-        (ele, _) => ele.refId === socket.auth.token
+        (ele) => ele.refId === socket.auth.token
       );
       setActiveUsers((draft) => {
-        draft = users.filter((ele, _) => ele.refId !== socket.auth.token);
+        draft = users.filter((ele) => ele.refId !== socket.auth.token);
         return draft;
       });
     }
-    socket.on("active:users", getActiveUsers);
+    socket.on('active:users', getActiveUsers);
     return () => {
-      socket.off("active:users", getActiveUsers);
+      socket.off('active:users', getActiveUsers);
     };
-  }, [activeUsers]);
+  }, [activeUsers, setActiveUsers]);
   return { refCurrentUser };
 }
