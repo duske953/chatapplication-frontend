@@ -45,10 +45,6 @@ export default function MessageBoxRoute() {
     setInputText(e.target.value);
   }
 
-  function handleOnTouchEnd(e) {
-    e.preventDefault();
-  }
-
   function handleOnFocus() {
     setTimeout(() => {
       elemRef.current.scroll({
@@ -77,7 +73,7 @@ export default function MessageBoxRoute() {
       title: sender.name,
     });
     inputRef.current.value = '';
-    btnRef;
+    inputRef.current.focus();
   }
 
   useEffect(() => {
@@ -178,7 +174,6 @@ export default function MessageBoxRoute() {
             rightButtons={
               <Button
                 ref={btnRef}
-                onTouchEnd={handleOnTouchEnd}
                 onClick={handleSubmit}
                 type="outlined"
                 className="chats-section__msg-send-btn"
