@@ -41,7 +41,7 @@ export default function Root() {
     setActiveUsers
   );
 
-  console.log(messages);
+  // console.log(messages);
 
   useEffect(() => {
     setActiveUsers((draft) => {
@@ -77,14 +77,14 @@ export default function Root() {
     };
   }, [params.profile, navigate, refCurrentUser]);
 
-  useEffect(() => {
-    function handleServerFull() {
-      setServerFull(true);
-    }
+  // useEffect(() => {
+  //   function handleServerFull() {
+  //     setServerFull(true);
+  //   }
 
-    socket.on('server:full', handleServerFull);
-    return () => socket.off('server:full', handleServerFull);
-  });
+  //   socket.on('server:full', handleServerFull);
+  //   return () => socket.off('server:full', handleServerFull);
+  // });
 
   function handleChatClick(userId) {
     setMessageAttr((attr) => {
