@@ -86,6 +86,13 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
           new: msg.senderId === params.profile ? false : true,
         },
       });
+
+      timeRef.current = setTimeout(() => {
+        elemRef.current?.scroll({
+          top: elemRef.current.scrollHeight + 1000,
+          behavior: 'smooth',
+        });
+      }, 13);
       setMessageAttr([
         ...messageAttr,
         { ...msg, new: msg.senderId === params.profile ? false : true },
@@ -96,6 +103,7 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
     socket.on('received:message', handleReceivedMessage);
     return () => {
       socket.off('received:message', handleReceivedMessage);
+      clearTimeout(timeRef.current);
     };
   }, [receivedMessage, setActiveUsers, params.profile, messageAttr]);
 
@@ -104,7 +112,7 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
       setSentMessage(msg);
       timeRef.current = setTimeout(() => {
         elemRef.current?.scroll({
-          top: elemRef.current.scrollHeight,
+          top: elemRef.current.scrollHeight + 1000,
           behavior: 'smooth',
         });
       }, 10);

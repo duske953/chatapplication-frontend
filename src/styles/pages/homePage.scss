@@ -118,7 +118,7 @@
   &__message-box {
     position: relative;
     overflow-y: auto;
-    height: 80%;
+    height: 87%;
     display: flex;
     grid-column: 2/-1;
     flex-direction: column;
@@ -220,9 +220,8 @@
     position: absolute !important;
     // bottom: 0;
     // position: absolute !important;
-    padding: 3rem 0;
+    padding: 1.5rem 0;
     top: 8rem;
-    padding-top: 2rem;
     z-index: -1;
     width: 100%;
     &-util {

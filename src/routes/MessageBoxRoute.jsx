@@ -17,6 +17,7 @@ import moment from 'moment';
 
 export default function MessageBoxRoute() {
   const params = useParams();
+  const btnRef = useRef(null);
   const navigate = useNavigate();
   const [inputText, setInputText] = useState('');
   const [userValid, setUserValid] = useState(true);
@@ -42,6 +43,10 @@ export default function MessageBoxRoute() {
       typing: true,
     });
     setInputText(e.target.value);
+  }
+
+  function handleOnTouchEnd(e) {
+    e.preventDefault();
   }
 
   function handleOnFocus() {
@@ -72,6 +77,7 @@ export default function MessageBoxRoute() {
       title: sender.name,
     });
     inputRef.current.value = '';
+    btnRef;
   }
 
   useEffect(() => {
@@ -171,6 +177,8 @@ export default function MessageBoxRoute() {
             }}
             rightButtons={
               <Button
+                ref={btnRef}
+                onTouchEnd={handleOnTouchEnd}
                 onClick={handleSubmit}
                 type="outlined"
                 className="chats-section__msg-send-btn"
