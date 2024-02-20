@@ -54,7 +54,7 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
-    if (elemRef.current.scrollHeight > elemRef.current.clientHeight) {
+    if (elemRef.current.scrollHeight >= elemRef.current.clientHeight - 200) {
       html.scrollTop = html.scrollHeight;
     }
     elemRef.current.scrollBottom = elemRef.scrollHeight;
