@@ -46,7 +46,7 @@ export default function MessageBoxRoute() {
   }
 
   function handleSubmit() {
-    const body = document.querySelector('html');
+    const html = document.querySelector('html');
     if (
       (disconnectedUser.id === params.profile && active === false) ||
       userValid === false
@@ -54,7 +54,9 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
-    body.scrollTop = body.scrollHeight;
+    if (elemRef.current.scrollHeight > elemRef.current.clientHeight) {
+      html.scrollTop = html.scrollHeight;
+    }
     elemRef.current.scrollBottom = elemRef.scrollHeight;
     socket.emit('send:message', {
       type: 'text',
