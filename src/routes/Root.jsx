@@ -64,18 +64,20 @@ export default function Root() {
     socket.emit('isUserStillValid', params.profile);
     function handleResponeIsUserStillValid({ foundUser }) {
       if (foundUser === 'no-user') {
-        return navigate('/', { replace: true });
+        navigate('/', { replace: true });
+        return true;
       }
       setMessageHeader({
         sender: refCurrentUser.current,
         receiver: foundUser[0],
       });
+      return true;
     }
     socket.once('response:userIsStillValid', handleResponeIsUserStillValid);
     return () => {
       socket.off('response:userIsStillValid', handleResponeIsUserStillValid);
     };
-  }, [params.profile, navigate, refCurrentUser]);
+  }, []);
 
   // useEffect(() => {
   //   function handleServerFull() {
@@ -99,13 +101,15 @@ export default function Root() {
 
     const matchMedia = window.matchMedia('(max-width:43.75em)');
     matchMedia.matches && setToggleNav(!toggleNav);
-    const receiver = activeUsers.find((ele) => ele.id === userId);
-    setMessageHeader({
-      sender: refCurrentUser.current,
-      receiver,
-    });
-
-    navigate(`/chats/${userId}`);
+    const foundUser = activeUsers.find((ele) => ele.id === userId);
+    if (foundUser.active) {
+      setMessageHeader({
+        sender: refCurrentUser.current,
+        receiver: foundUser,
+      });
+      return navigate(`/chats/${userId}`);
+    }
+    return navigate('/');
   }
 
   if (!refCurrentUser.current)

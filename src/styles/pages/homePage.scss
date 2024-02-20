@@ -151,7 +151,7 @@
     padding: 2.4rem 0 1.8rem 2.2rem;
     padding-bottom: 1.6rem;
     border-bottom: 2px solid v.$primary-grey-color;
-    position: sticky;
+    position: fixed;
     width: 100%;
     top: 0;
 
@@ -217,10 +217,10 @@
   }
 
   &__message-list {
-    // position: absolute !important;
+    position: absolute !important;
     // bottom: 0;
     // position: absolute !important;
-    // top: 10rem;
+    top: 8rem;
     padding-top: 2rem;
     z-index: -1;
     width: 100%;

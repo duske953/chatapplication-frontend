@@ -3,8 +3,6 @@ import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import arraySort from 'array-sort';
 import { useRef } from 'react';
-import { useLayoutEffect } from 'react';
-
 function filterSentMessages(msg, refCurrentUser, profile) {
   return msg.filter(
     (ele) =>
@@ -27,8 +25,6 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
   const [messages, setMessages] = useState([]);
   const timeRef = useRef(null);
   const elemRef = useRef(null);
-
-  useEffect(() => {}, []);
 
   useEffect(() => {
     function handleAllMessages(msg) {

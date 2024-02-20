@@ -52,6 +52,7 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
+    console.log(sender);
 
     socket.emit('send:message', {
       type: 'text',
@@ -68,7 +69,10 @@ export default function MessageBoxRoute() {
 
   useEffect(() => {
     function handleIsUserStillVald(response) {
-      if (response.foundUser === 'no-user') return setUserValid(false);
+      if (response.foundUser === 'no-user' && response.id === params.profile) {
+        navigate('/', { replace: true });
+        return setUserValid(false);
+      }
       if (response.foundUser) return setUserValid(true);
     }
     socket.emit('isUserStillValid', params.profile);
@@ -77,7 +81,7 @@ export default function MessageBoxRoute() {
     return () => {
       socket.off('response:userIsStillValid', handleIsUserStillVald);
     };
-  }, [params.profile, active]);
+  }, [params.profile, active, navigate]);
 
   useEffect(() => {
     socket.emit('userIsTyping', {
