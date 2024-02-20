@@ -44,6 +44,12 @@ export default function MessageBoxRoute() {
     setInputText(e.target.value);
   }
 
+  function handleOnFocus() {
+    elemRef.current.scroll({
+      top: elemRef.current.scrollHeight,
+      behavior: 'instant',
+    });
+  }
   function handleSubmit() {
     if (
       (disconnectedUser.id === params.profile && active === false) ||
@@ -52,7 +58,6 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
-    console.log(sender);
 
     socket.emit('send:message', {
       type: 'text',
@@ -149,13 +154,10 @@ export default function MessageBoxRoute() {
           toBottomHeight={300}
           dataSource={messages}
         />
-        <Form
-          className="chats-section__input-box"
-          method="get"
-          onSubmit={handleSubmit}
-        >
+        <div className="chats-section__input-box" method="get">
           <Input
             placeholder="Start a conversation"
+            onFocus={handleOnFocus}
             referance={inputRef}
             multiline={true}
             onChange={handleChange}
@@ -167,6 +169,7 @@ export default function MessageBoxRoute() {
             }}
             rightButtons={
               <Button
+                onClick={handleSubmit}
                 type="outlined"
                 className="chats-section__msg-send-btn"
                 disabled={inputRef.current?.value !== '' ? false : true}
@@ -179,7 +182,7 @@ export default function MessageBoxRoute() {
               />
             }
           />
-        </Form>
+        </div>
       </div>
     </>
   );
