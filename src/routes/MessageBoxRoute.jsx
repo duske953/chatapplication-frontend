@@ -152,16 +152,20 @@ export default function MessageBoxRoute() {
             text={`${receiver.name} is currently not online and so, Messages can't be delievered at this time`}
           />
         )}
-        <MessageList
-          className="chats-section__message-list"
-          lockable={false}
-          toBottomHeight={300}
-          dataSource={messages}
-        />
+        <div>
+          <MessageList
+            className="chats-section__message-list"
+            lockable={false}
+            toBottomHeight={300}
+            dataSource={messages}
+          />
+        </div>
+
         <div className="chats-section__input-box" method="get">
           <Input
             placeholder="Start a conversation"
             onFocus={handleOnFocus}
+            inputMode="none"
             referance={inputRef}
             multiline={true}
             onChange={handleChange}

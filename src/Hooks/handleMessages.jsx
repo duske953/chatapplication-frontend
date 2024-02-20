@@ -28,6 +28,12 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
 
   useEffect(() => {
     function handleAllMessages(msg) {
+      timeRef.current = setTimeout(() => {
+        elemRef.current?.scroll({
+          top: elemRef.current.scrollHeight,
+          behavior: 'instant',
+        });
+      }, 15);
       setSentMessage(
         filterSentMessages(msg.sentMessages, refCurrentUser, params.profile)
       );
@@ -40,12 +46,6 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
         )
       );
       setMessageAttr(msg.messageAttr);
-      timeRef.current = setTimeout(() => {
-        elemRef.current?.scroll({
-          top: elemRef.current.scrollHeight,
-          behavior: 'instant',
-        });
-      }, 13);
     }
     socket.emit('fetchAllMessages');
     socket.on('sendAllMessages', handleAllMessages);
@@ -110,17 +110,10 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
   useEffect(() => {
     function handleSentMessage({ msg }) {
       setSentMessage(msg);
-      timeRef.current = setTimeout(() => {
-        elemRef.current?.scroll({
-          top: elemRef.current.scrollHeight + 1000,
-          behavior: 'smooth',
-        });
-      }, 10);
     }
     socket.on('sent:message', handleSentMessage);
     return () => {
       socket.off('sent:message', handleSentMessage);
-      clearTimeout(timeRef.current);
     };
   }, []);
 
