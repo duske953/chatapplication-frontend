@@ -46,15 +46,16 @@ export default function MessageBoxRoute() {
   }
 
   function handleOnFocus() {
+    const body = document.querySelector('body');
     setTimeout(() => {
       elemRef.current.scroll({
         top: elemRef.current.scrollHeight + 100,
         behavior: 'instant',
       });
-      document.querySelector('body').scroll({
-        top: document.querySelector('body').scrollHeight + 100,
-        behavior: 'instant',
-      });
+    }, 15);
+
+    setTimeout(() => {
+      body.scrollTop = body.scrollHeight;
     }, 30);
   }
   function handleSubmit() {
