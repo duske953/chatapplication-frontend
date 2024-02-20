@@ -110,10 +110,21 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
   useEffect(() => {
     function handleSentMessage({ msg }) {
       setSentMessage(msg);
+      timeRef.current = setTimeout(() => {
+        elemRef.current?.scroll({
+          top: elemRef.current.scrollHeight,
+          behavior: 'instant',
+        });
+        document.querySelector('body').scroll({
+          top: document.querySelector('body').scrollHeight + 100,
+          behavior: 'instant',
+        });
+      }, 15);
     }
     socket.on('sent:message', handleSentMessage);
     return () => {
       socket.off('sent:message', handleSentMessage);
+      clearTimeout(timeRef.current);
     };
   }, []);
 

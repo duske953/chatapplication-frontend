@@ -51,6 +51,10 @@ export default function MessageBoxRoute() {
         top: elemRef.current.scrollHeight + 100,
         behavior: 'instant',
       });
+      document.querySelector('body').scroll({
+        top: document.querySelector('body').scrollHeight + 100,
+        behavior: 'instant',
+      });
     }, 20);
   }
   function handleSubmit() {
