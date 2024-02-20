@@ -1,6 +1,6 @@
 import { socket } from '../socket';
 import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import arraySort from 'array-sort';
 import { useRef } from 'react';
 function filterSentMessages(msg, refCurrentUser, profile) {
@@ -24,16 +24,12 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
   const [messageAttr, setMessageAttr] = useState([]);
   const [messages, setMessages] = useState([]);
   const timeRef = useRef(null);
+  const timeSentRef = useRef(null);
+  const timeReceivedRef = useRef(null);
   const elemRef = useRef(null);
 
   useEffect(() => {
     function handleAllMessages(msg) {
-      timeRef.current = setTimeout(() => {
-        elemRef.current?.scroll({
-          top: elemRef.current.scrollHeight,
-          behavior: 'instant',
-        });
-      }, 15);
       setSentMessage(
         filterSentMessages(msg.sentMessages, refCurrentUser, params.profile)
       );
@@ -45,10 +41,18 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
           params.profile
         )
       );
+
+      timeRef.current = setTimeout(() => {
+        elemRef.current?.scroll({
+          top: elemRef.current.scrollHeight,
+          behavior: 'instant',
+        });
+      }, 13);
       setMessageAttr(msg.messageAttr);
     }
     socket.emit('fetchAllMessages');
     socket.on('sendAllMessages', handleAllMessages);
+
     return () => {
       socket.off('sendAllMessages', handleAllMessages);
       clearTimeout(timeRef.current);
@@ -87,12 +91,12 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
         },
       });
 
-      // timeRef.current = setTimeout(() => {
-      //   elemRef.current?.scroll({
-      //     top: elemRef.current.scrollHeight + 1000,
-      //     behavior: 'smooth',
-      //   });
-      // }, 13);
+      timeReceivedRef.current = setTimeout(() => {
+        elemRef.current?.scroll({
+          top: elemRef.current.scrollHeight,
+          behavior: 'smooth',
+        });
+      }, 5);
       setMessageAttr([
         ...messageAttr,
         { ...msg, new: msg.senderId === params.profile ? false : true },
@@ -102,29 +106,25 @@ export default function useHandleMessages(refCurrentUser, setActiveUsers) {
 
     socket.on('received:message', handleReceivedMessage);
     return () => {
+      clearTimeout(timeReceivedRef);
       socket.off('received:message', handleReceivedMessage);
-      // clearTimeout(timeRef.current);
     };
   }, [receivedMessage, setActiveUsers, params.profile, messageAttr]);
 
   useEffect(() => {
     function handleSentMessage({ msg }) {
       setSentMessage(msg);
-      timeRef.current = setTimeout(() => {
+      timeSentRef.current = setTimeout(() => {
         elemRef.current?.scroll({
           top: elemRef.current.scrollHeight,
-          behavior: 'instant',
+          behavior: 'smooth',
         });
-        document.querySelector('body').scroll({
-          top: document.querySelector('body').scrollHeight + 100,
-          behavior: 'instant',
-        });
-      }, 15);
+      }, 5);
     }
     socket.on('sent:message', handleSentMessage);
     return () => {
+      clearTimeout(timeSentRef.current);
       socket.off('sent:message', handleSentMessage);
-      clearTimeout(timeRef.current);
     };
   }, []);
 

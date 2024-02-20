@@ -45,20 +45,8 @@ export default function MessageBoxRoute() {
     setInputText(e.target.value);
   }
 
-  function handleOnFocus() {
-    const body = document.querySelector('body');
-    setTimeout(() => {
-      elemRef.current.scroll({
-        top: elemRef.current.scrollHeight + 100,
-        behavior: 'instant',
-      });
-    }, 15);
-
-    setTimeout(() => {
-      body.scrollTop = body.scrollHeight;
-    }, 30);
-  }
   function handleSubmit() {
+    const body = document.querySelector('html');
     if (
       (disconnectedUser.id === params.profile && active === false) ||
       userValid === false
@@ -66,7 +54,8 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
-
+    body.scrollTop = body.scrollHeight;
+    elemRef.current.scrollBottom = elemRef.scrollHeight;
     socket.emit('send:message', {
       type: 'text',
       text: inputText,
@@ -77,6 +66,7 @@ export default function MessageBoxRoute() {
       time: moment().format(),
       title: sender.name,
     });
+
     inputRef.current.value = '';
     inputRef.current.focus();
   }
@@ -157,19 +147,17 @@ export default function MessageBoxRoute() {
             text={`${receiver.name} is currently not online and so, Messages can't be delievered at this time`}
           />
         )}
-        <div>
-          <MessageList
-            className="chats-section__message-list"
-            lockable={false}
-            toBottomHeight={300}
-            dataSource={messages}
-          />
-        </div>
+
+        <MessageList
+          className="chats-section__message-list"
+          lockable={false}
+          toBottomHeight={300}
+          dataSource={messages}
+        />
 
         <div className="chats-section__input-box" method="get">
           <Input
             placeholder="Start a conversation"
-            onFocus={handleOnFocus}
             inputMode="none"
             referance={inputRef}
             multiline={true}
@@ -182,7 +170,6 @@ export default function MessageBoxRoute() {
             }}
             rightButtons={
               <Button
-                ref={btnRef}
                 onClick={handleSubmit}
                 type="outlined"
                 className="chats-section__msg-send-btn"
