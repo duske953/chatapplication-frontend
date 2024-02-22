@@ -127,7 +127,6 @@ export default function MessageBoxRoute() {
             </p>
           </div>
           <CiMenuBurger
-            style={{ top: '1rem', transform: 'translateY(0)' }}
             className="chats-section__icon-toggle"
             onClick={handleClickNav}
           />
