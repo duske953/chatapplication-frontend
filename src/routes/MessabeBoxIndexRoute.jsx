@@ -4,34 +4,30 @@ import { CiMenuBurger } from 'react-icons/ci';
 export default function IndexMessageBoxRoute() {
   const { toggleNav, handleClickNav } = useOutletContext();
   return (
-    <section style={{ position: 'relative', width: '100%' }}>
+    <section style={{ position: 'relative', width: '100%', bottom: 0 }}>
       <div className="chats-section__empty-chat">
+        {toggleNav && <div onClick={handleClickNav} className="overlay"></div>}
         <>
           <CiMenuBurger
             style={{ top: '1rem', transform: 'translateY(0)' }}
-            className={
-              toggleNav
-                ? 'chats-section__icon-toggle chats-section__icon-toggle--active'
-                : 'chats-section__icon-toggle'
-            }
+            className="chats-section__icon-toggle"
             onClick={handleClickNav}
           />
           <img className="chats-section__empty-chat-img" src={wavyTech} />
           <p>Your chats Will appear here</p>
         </>
-        <footer className="chats-section__footer">
-          <p>
-            Created with love by{' '}
-            <a
-              rel="noreferrer"
-              target="_blank"
-              href="https://eloho-ken.b4a.app"
-            >
-              Eloho Kennedy
-            </a>
-          </p>
-        </footer>
       </div>
+      <footer
+        style={{ zIndex: toggleNav ? -1 : 1 }}
+        className="chats-section__footer"
+      >
+        <p>
+          Created with love by{' '}
+          <a rel="noreferrer" target="_blank" href="https://eloho-ken.b4a.app">
+            Eloho Kennedy
+          </a>
+        </p>
+      </footer>
     </section>
   );
 }

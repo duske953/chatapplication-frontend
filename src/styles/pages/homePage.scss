@@ -229,9 +229,10 @@
   &__empty-chat {
     position: absolute;
     width: 100%;
+    top: 50%;
     left: 50%;
     height: 100%;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -256,29 +257,34 @@
     left: 0;
     cursor: pointer;
     position: absolute;
+    z-index: 30000000;
     font-size: 3.2rem;
     @media (max-width: 43.75em) {
       display: block;
-      z-index: 1000;
+      z-index: 30000000;
     }
-    &--active {
-      @media (max-width: 43.75em) {
-        display: none;
-      }
-    }
+    // &--active {
+    //   @media (max-width: 43.75em) {
+    //     display: none;
+    //   }
+    // }
   }
 
   &__footer {
     position: absolute;
     bottom: 0;
+    right: 0;
     width: 100%;
     text-align: center;
     left: 50%;
     transform: translateX(-50%);
     font-weight: 500;
+    @media (max-width: 43.75em) {
+      position: fixed;
+    }
 
     & p {
-      font-size: 1.8rem;
+      font-size: 1.6rem;
     }
 
     & a:link,
@@ -331,4 +337,13 @@
 
 .btn-cursor {
   cursor: default !important;
+}
+
+.overlay {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  z-index: 2000;
+  top: 0;
+  cursor: pointer;
 }

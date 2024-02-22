@@ -1,15 +1,15 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import MessageBoxRoute from "./routes/MessageBoxRoute.jsx";
-import IndexMessageBoxRoute from "./routes/MessabeBoxIndexRoute.jsx";
-import "./styles/main.scss";
-import "react-chat-elements/dist/main.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Root from "./routes/Root.jsx";
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import MessageBoxRoute from './routes/MessageBoxRoute.jsx';
+import IndexMessageBoxRoute from './routes/MessabeBoxIndexRoute.jsx';
+import './styles/main.scss';
+import 'react-chat-elements/dist/main.css';
+import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import Root from './routes/Root.jsx';
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: '/',
     element: <Root />,
     children: [
       {
@@ -17,14 +17,16 @@ const router = createBrowserRouter([
         element: <IndexMessageBoxRoute />,
       },
       {
-        path: "/chats/:profile",
+        path: '/chats/:profile',
         element: <MessageBoxRoute />,
       },
     ],
   },
 ]);
-ReactDOM.createRoot(document.getElementById("root")).render(
+ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+    <main style={{ position: 'relative' }}>
+      <RouterProvider router={router} />
+    </main>
   </React.StrictMode>
 );

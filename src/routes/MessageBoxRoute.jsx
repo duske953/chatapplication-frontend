@@ -108,6 +108,7 @@ export default function MessageBoxRoute() {
   return (
     <>
       <div className="chats-section__message-box">
+        {toggleNav && <div onClick={handleClickNav} className="overlay"></div>}
         <div className="chats-section__chat-receiver">
           <img
             src={receiver?.image}
@@ -126,11 +127,8 @@ export default function MessageBoxRoute() {
             </p>
           </div>
           <CiMenuBurger
-            className={
-              toggleNav
-                ? 'chats-section__icon-toggle chats-section__icon-toggle--active'
-                : 'chats-section__icon-toggle'
-            }
+            style={{ top: '1rem', transform: 'translateY(0)' }}
+            className="chats-section__icon-toggle"
             onClick={handleClickNav}
           />
         </div>

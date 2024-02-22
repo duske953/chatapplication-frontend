@@ -173,22 +173,21 @@ export default function Root() {
                 />
               ))}
             </ul>
-            {userIsConnected && (
-              <DisplayPopup username={userIsConnected.name} />
-            )}
           </div>
-          <Outlet
-            context={{
-              messageHeader,
-              userIsDisconnected,
-              setUserisDisconnected,
-              messages,
-              elemRef,
-              toggleNav,
-              handleClickNav,
-              refCurrentUser,
-            }}
-          />
+          <>
+            <Outlet
+              context={{
+                messageHeader,
+                userIsDisconnected,
+                setUserisDisconnected,
+                messages,
+                elemRef,
+                toggleNav,
+                handleClickNav,
+                refCurrentUser,
+              }}
+            />
+          </>
         </div>
       </section>
     </>
