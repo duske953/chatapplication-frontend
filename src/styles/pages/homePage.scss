@@ -5,11 +5,10 @@
   &__container {
     display: grid;
     @media (max-width: 43.75em) {
-      display: block;
+      display: flex;
     }
     grid-template-columns: 25rem auto;
     height: 100vh;
-    // gap: v.$sm-flex-gap;
     margin: 0 auto;
   }
 
@@ -42,6 +41,24 @@
     &::-webkit-scrollbar-thumb {
       background: #ced4da;
       border-radius: 20px;
+    }
+  }
+
+  &__message-list-container {
+    position: relative;
+    height: 95vh !important;
+    width: 100%;
+  }
+
+  &__message-list-box {
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
     }
   }
 
@@ -79,10 +96,6 @@
     @media (max-width: 43.75em) {
       display: block;
     }
-
-    // @media(max-width: 21.87em){
-    //   right:-9.8rem;
-    // }
   }
 
   &__chats-discuss {
@@ -91,7 +104,6 @@
   &__ut-cs {
     position: sticky;
     height: 100%;
-    // width: 25%;
     border-right: 2px solid v.$primary-grey-color;
     transition: all 0.3s ease-in-out;
     z-index: 1000;
@@ -101,7 +113,7 @@
       width: 70%;
       background-color: #f8f9fa;
       height: 100vh;
-      z-index: 10;
+      z-index: 5000;
       transform: translateX(-150%);
     }
 
@@ -117,31 +129,18 @@
 
   &__message-box {
     position: relative;
-    overflow-y: auto;
-    height: 87%;
     display: flex;
     grid-column: 2/-1;
     flex-direction: column;
-    -ms-overflow-style: none; /* Internet Explorer 10+ */
-    scrollbar-width: none; /* Firefox */
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
+    -ms-overflow-style: none;
+    scrollbar-width: none;
     @media (max-width: 43.75em) {
-      // height: 85%;
+      flex: 1;
     }
   }
 
   &__msg-send-btn {
     border-radius: 100px !important;
-    // position: fixed;
-    // bottom: 0;
-    // /* top: 50%; */
-    // border: 50%;
-    // /* bottom: 50%; */
-    // right: 3vw;
-    // transform: translateY(-39%);
   }
 
   &__chat-receiver {
@@ -152,6 +151,7 @@
     padding-bottom: 1.6rem;
     border-bottom: 2px solid v.$primary-grey-color;
     position: fixed;
+    z-index: 1000;
     width: 100%;
     top: 0;
 
@@ -173,7 +173,6 @@
 
   &__chat-list {
     flex-shrink: 0;
-    // width: 0;
   }
 
   &__profile-box {
@@ -194,7 +193,6 @@
     position: fixed;
     bottom: 1rem;
     width: 77%;
-    // padding: 1.4rem 0;f
     margin-top: auto;
 
     @media (max-width: 62.5em) {
@@ -206,8 +204,6 @@
     }
   }
   &__chat-input {
-    // resize: none;
-
     border: 2px solid #000;
     border-radius: 100px;
     overflow: hidden;
@@ -217,35 +213,34 @@
   }
 
   &__message-list {
-    // position: absolute !important;
-    // bottom: 0;
-    // position: absolute !important;
-
-    padding: 3.5rem 0;
     top: 7rem;
-    z-index: -1;
+    padding: 1.8rem 0;
+    padding-bottom: 3.5rem;
     width: 100%;
     &-util {
       margin-bottom: 2.5rem;
     }
+
+    &-container {
+      height: 100%;
+    }
   }
 
   &__empty-chat {
-    // width: 100%;
-    // left: 50%;
+    position: absolute;
+    width: 100%;
+    left: 50%;
     height: 100%;
-    // transform: translateX(-50%);
+    transform: translateX(-50%);
     display: flex;
-    // align-items: center;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
     text-align: center;
-    // height: 100vh;
     padding: 0 0.7rem;
 
     &-img {
-      width: 40rem;
-      margin: 0 auto;
+      width: 35rem;
     }
     & p {
       font-size: 3.8rem;
@@ -274,13 +269,14 @@
   }
 
   &__footer {
-    // position: absolute;
+    position: absolute;
     bottom: 0;
     width: 100%;
     text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
     font-weight: 500;
     font-size: 1.2rem;
-    // padding:2.4rem 0;
 
     & a:link,
     & a:visited {
@@ -303,7 +299,6 @@
 
 .rce-input-textarea {
   padding: 10px 0 !important;
-  // margin-top: auto;
   height: 40px !important;
 
   &::-webkit-scrollbar {

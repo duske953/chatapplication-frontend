@@ -1,26 +1,29 @@
-import { useEffect, useState, useRef } from 'react';
-import {
-  Form,
-  useNavigate,
-  useOutletContext,
-  useParams,
-} from 'react-router-dom';
+/* eslint-disable react/prop-types */
+import { useEffect, useState, useRef, createContext } from 'react';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { MessageList } from 'react-chat-elements';
 import { Input } from 'react-chat-elements';
+import useDetectKeyboardOpen from 'use-detect-keyboard-open';
+import { isMobile } from 'react-device-detect';
 import { Button } from 'react-chat-elements';
 import { useDebounce } from 'use-debounce';
 import { socket } from '../socket';
 import { AiOutlineSend } from 'react-icons/ai';
 import { SystemMessage } from 'react-chat-elements';
 import { CiMenuBurger } from 'react-icons/ci';
+import ScrollToBottom, {
+  useScrollToBottom,
+  useScrollToEnd,
+} from 'react-scroll-to-bottom';
 import moment from 'moment';
-
+import { useContext } from 'react';
+const MessageListContext = createContext(null);
 export default function MessageBoxRoute() {
   const params = useParams();
-  const btnRef = useRef(null);
   const navigate = useNavigate();
   const [inputText, setInputText] = useState('');
   const [userValid, setUserValid] = useState(true);
+  const isKeyboardOpen = useDetectKeyboardOpen();
   const [showSystemMessage, setShowSystemMessage] = useState(false);
   const [value] = useDebounce(inputText, 1000);
   const {
@@ -44,9 +47,7 @@ export default function MessageBoxRoute() {
     });
     setInputText(e.target.value);
   }
-
   function handleSubmit() {
-    const html = document.querySelector('html');
     if (
       (disconnectedUser.id === params.profile && active === false) ||
       userValid === false
@@ -54,10 +55,7 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(true);
       return;
     }
-    if (html.scrollHeight > html.clientHeight) {
-      html.scrollTop = html.scrollHeight;
-    }
-    elemRef.current.scrollBottom = elemRef.scrollHeight;
+
     socket.emit('send:message', {
       type: 'text',
       text: inputText,
@@ -68,7 +66,6 @@ export default function MessageBoxRoute() {
       time: moment().format(),
       title: sender.name,
     });
-
     inputRef.current.value = '';
     inputRef.current.focus();
   }
@@ -114,10 +111,9 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(false);
     }
   }, [disconnectedUser, params.profile, userValid, disconnected, navigate]);
-
   return (
     <>
-      <div ref={elemRef} className="chats-section__message-box">
+      <div className="chats-section__message-box">
         <div className="chats-section__chat-receiver">
           <img
             src={receiver?.image}
@@ -150,41 +146,50 @@ export default function MessageBoxRoute() {
           />
         )}
 
-        <MessageList
-          className="chats-section__message-list"
-          lockable={false}
-          toBottomHeight={300}
-          dataSource={messages}
-        />
-
-        <div className="chats-section__input-box" method="get">
-          <Input
-            placeholder="Start a conversation"
-            inputMode="none"
-            referance={inputRef}
-            multiline={true}
-            onChange={handleChange}
-            className="chats-section__chat-input"
-            minHeight={30}
-            inputStyle={{
-              fontSize: '2rem',
-              height: '44px',
+        <div className="chats-section__message-list-container">
+          <div
+            ref={elemRef}
+            style={{
+              paddingBottom: isMobile ? '16rem' : '10rem',
             }}
-            rightButtons={
-              <Button
-                onClick={handleSubmit}
-                type="outlined"
-                className="chats-section__msg-send-btn"
-                disabled={inputRef.current?.value !== '' ? false : true}
-                title="submit"
-                icon={{
-                  size: 35,
-                  float: 'right',
-                  component: <AiOutlineSend />,
-                }}
-              />
-            }
-          />
+            className="chats-section__message-list-box"
+          >
+            <MessageList
+              className="chats-section__message-list"
+              lockable={false}
+              toBottomHeight={300}
+              dataSource={messages}
+            />
+          </div>
+          <div className="chats-section__input-box" method="get">
+            <Input
+              placeholder="Start a conversation"
+              inputMode="none"
+              referance={inputRef}
+              multiline={true}
+              onChange={handleChange}
+              className="chats-section__chat-input"
+              minHeight={30}
+              inputStyle={{
+                fontSize: '2rem',
+                height: '44px',
+              }}
+              rightButtons={
+                <Button
+                  onClick={handleSubmit}
+                  type="outlined"
+                  className="chats-section__msg-send-btn"
+                  disabled={inputRef.current?.value !== '' ? false : true}
+                  title="submit"
+                  icon={{
+                    size: 35,
+                    float: 'right',
+                    component: <AiOutlineSend />,
+                  }}
+                />
+              }
+            />
+          </div>
         </div>
       </div>
     </>

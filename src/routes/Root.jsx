@@ -29,6 +29,7 @@ export default function Root() {
 
   const [activeUsers, setActiveUsers] = useImmer([]);
   const [toggleNav, setToggleNav] = useState(false);
+  const [userId, setUserId] = useState(null);
   const { refCurrentUser } = useGetActiveUsers(setActiveUsers, activeUsers);
   const userIsConnected = useIsClientAlreadyConnected();
   const { userIsDisconnected, setUserisDisconnected } = useDisconnectedUser(
@@ -46,19 +47,15 @@ export default function Root() {
   useEffect(() => {
     setActiveUsers((draft) => {
       draft?.sort((a, b) => {
-        let objA = messageAttr.findLast(
-          (ele) => ele.senderId === a.id && ele.new
-        );
-        let objB = messageAttr.findLast(
-          (ele) => ele.senderId === b.id && ele.new
-        );
-        if (objA && !objB) return -1;
+        let objA = messageAttr.findLast((ele) => ele.senderId === a.id);
+        let objB = messageAttr.findLast((ele) => ele.senderId === b.id);
+        if (params.profile === userId) return 0;
         if (objA?.time > objB?.time) return -1;
         if (objB?.time > objA?.time) return 1;
         return 0;
       });
     });
-  }, [messageAttr, setActiveUsers]);
+  }, [messageAttr, setActiveUsers, params.profile, userId]);
 
   useEffect(() => {
     socket.emit('isUserStillValid', params.profile);
@@ -79,16 +76,8 @@ export default function Root() {
     };
   }, []);
 
-  // useEffect(() => {
-  //   function handleServerFull() {
-  //     setServerFull(true);
-  //   }
-
-  //   socket.on('server:full', handleServerFull);
-  //   return () => socket.off('server:full', handleServerFull);
-  // });
-
   function handleChatClick(userId) {
+    setUserId(userId);
     setMessageAttr((attr) => {
       return attr.map((ele) => {
         if (ele.senderId === userId) {
@@ -102,14 +91,14 @@ export default function Root() {
     const matchMedia = window.matchMedia('(max-width:43.75em)');
     matchMedia.matches && setToggleNav(!toggleNav);
     const foundUser = activeUsers.find((ele) => ele.id === userId);
-    if (foundUser.active) {
+    if (foundUser.active && params.profile !== userId) {
       setMessageHeader({
         sender: refCurrentUser.current,
         receiver: foundUser,
       });
       return navigate(`/chats/${userId}`);
     }
-    return navigate('/');
+    // return navigate('/');
   }
 
   if (!refCurrentUser.current)
@@ -177,7 +166,16 @@ export default function Root() {
             }}
           />
           {/* <footer className="chats-section__footer">
-            <p>Created with love by <a rel="noopener" target="_blank" href="https://eloho-ken.b4a.app">Eloho Kennedy</a></p>
+            <p>
+              Created with love by{' '}
+              <a
+                rel="noreferrer"
+                target="_blank"
+                href="https://eloho-ken.b4a.app"
+              >
+                Eloho Kennedy
+              </a>
+            </p>
           </footer> */}
         </div>
       </section>
