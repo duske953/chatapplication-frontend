@@ -104,6 +104,7 @@ export default function MessageBoxRoute() {
       setShowSystemMessage(false);
     }
   }, [disconnectedUser, params.profile, userValid, disconnected, navigate]);
+
   return (
     <>
       <div className="chats-section__message-box">
@@ -171,8 +172,10 @@ export default function MessageBoxRoute() {
                 <Button
                   onClick={handleSubmit}
                   type="outlined"
-                  className="chats-section__msg-send-btn"
-                  disabled={inputRef.current?.value !== '' ? false : true}
+                  className={`chats-section__msg-send-btn ${
+                    !inputText ? 'btn-cursor' : ''
+                  }`}
+                  disabled={inputText ? false : true}
                   title="submit"
                   icon={{
                     size: 35,

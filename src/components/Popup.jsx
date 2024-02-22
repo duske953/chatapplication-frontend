@@ -1,13 +1,13 @@
-import { Popup, Button } from "react-chat-elements";
+import { Popup, Button } from 'react-chat-elements';
 
-function popupSettings(username) {
+function popupSettings(header, text) {
   const popup = {
     show: true,
-    header: "Account is Active",
-    text: `Hey ${username}, you already have an account running.`,
+    header,
+    text,
   };
   return popup;
 }
-export default function DisplayPopup(props) {
-  return <Popup popup={popupSettings(props.username)} />;
+export default function DisplayPopup({ header, text }) {
+  return <Popup popup={popupSettings(header, text)} />;
 }

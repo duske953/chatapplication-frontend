@@ -29,6 +29,7 @@ export default function Root() {
 
   const [activeUsers, setActiveUsers] = useImmer([]);
   const [toggleNav, setToggleNav] = useState(false);
+  const [serverFull, setServerFull] = useState(false);
   const [userId, setUserId] = useState(null);
   const { refCurrentUser } = useGetActiveUsers(setActiveUsers, activeUsers);
   const userIsConnected = useIsClientAlreadyConnected();
@@ -42,7 +43,7 @@ export default function Root() {
     setActiveUsers
   );
 
-  // console.log(messages);
+  const isConnected = useIsClientAlreadyConnected();
 
   useEffect(() => {
     setActiveUsers((draft) => {
@@ -76,6 +77,15 @@ export default function Root() {
     };
   }, []);
 
+  useEffect(() => {
+    function handleServerFull() {
+      setServerFull(true);
+    }
+
+    socket.on('server:full', handleServerFull);
+    return () => socket.on('server:full', handleServerFull);
+  }, []);
+
   function handleChatClick(userId) {
     setUserId(userId);
     setMessageAttr((attr) => {
@@ -98,8 +108,22 @@ export default function Root() {
       });
       return navigate(`/chats/${userId}`);
     }
-    // return navigate('/');
   }
+
+  if (serverFull)
+    return (
+      <DisplayPopup
+        header="Server full"
+        text="This chat room is currently at its maximum capacity. Please try again later"
+      />
+    );
+  if (isConnected)
+    return (
+      <DisplayPopup
+        header="Account is Active"
+        text={`Hey ${isConnected.name}, You already have an account running`}
+      />
+    );
 
   if (!refCurrentUser.current)
     return (
@@ -165,18 +189,6 @@ export default function Root() {
               refCurrentUser,
             }}
           />
-          {/* <footer className="chats-section__footer">
-            <p>
-              Created with love by{' '}
-              <a
-                rel="noreferrer"
-                target="_blank"
-                href="https://eloho-ken.b4a.app"
-              >
-                Eloho Kennedy
-              </a>
-            </p>
-          </footer> */}
         </div>
       </section>
     </>

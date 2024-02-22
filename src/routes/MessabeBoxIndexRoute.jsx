@@ -19,6 +19,18 @@ export default function IndexMessageBoxRoute() {
           <img className="chats-section__empty-chat-img" src={wavyTech} />
           <p>Your chats Will appear here</p>
         </>
+        <footer className="chats-section__footer">
+          <p>
+            Created with love by{' '}
+            <a
+              rel="noreferrer"
+              target="_blank"
+              href="https://eloho-ken.b4a.app"
+            >
+              Eloho Kennedy
+            </a>
+          </p>
+        </footer>
       </div>
     </section>
   );

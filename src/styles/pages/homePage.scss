@@ -276,7 +276,10 @@
     left: 50%;
     transform: translateX(-50%);
     font-weight: 500;
-    font-size: 1.2rem;
+
+    & p {
+      font-size: 1.8rem;
+    }
 
     & a:link,
     & a:visited {
@@ -324,4 +327,8 @@
   font-size: 4rem;
   width: 100%;
   text-align: center;
+}
+
+.btn-cursor {
+  cursor: default !important;
 }
