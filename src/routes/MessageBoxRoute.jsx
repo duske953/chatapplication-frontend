@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState, useRef, createContext } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { MessageList } from 'react-chat-elements';
 import { Input } from 'react-chat-elements';
-import useDetectKeyboardOpen from 'use-detect-keyboard-open';
 import { isMobile } from 'react-device-detect';
 import { Button } from 'react-chat-elements';
 import { useDebounce } from 'use-debounce';
@@ -11,19 +10,12 @@ import { socket } from '../socket';
 import { AiOutlineSend } from 'react-icons/ai';
 import { SystemMessage } from 'react-chat-elements';
 import { CiMenuBurger } from 'react-icons/ci';
-import ScrollToBottom, {
-  useScrollToBottom,
-  useScrollToEnd,
-} from 'react-scroll-to-bottom';
-import moment from 'moment';
-import { useContext } from 'react';
-const MessageListContext = createContext(null);
+
 export default function MessageBoxRoute() {
   const params = useParams();
   const navigate = useNavigate();
   const [inputText, setInputText] = useState('');
   const [userValid, setUserValid] = useState(true);
-  const isKeyboardOpen = useDetectKeyboardOpen();
   const [showSystemMessage, setShowSystemMessage] = useState(false);
   const [value] = useDebounce(inputText, 1000);
   const {

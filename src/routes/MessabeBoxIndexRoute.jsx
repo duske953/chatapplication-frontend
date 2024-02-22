@@ -4,7 +4,7 @@ import { CiMenuBurger } from 'react-icons/ci';
 export default function IndexMessageBoxRoute() {
   const { toggleNav, handleClickNav } = useOutletContext();
   return (
-    <section style={{ position: 'relative' }}>
+    <section style={{ position: 'relative', width: '100%' }}>
       <div className="chats-section__empty-chat">
         <>
           <CiMenuBurger
