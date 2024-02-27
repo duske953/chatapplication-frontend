@@ -1,4 +1,4 @@
-## Chat-Application Frontend
+## Anonymo: Your Anonymous Chat Playground
 
 This repository contains the frontend code for a real-time chat application built with React, React Router, Socket.IO, Vite, and Sass. It offers features like typing indicator, anonymous messaging, and message history (within the browser session).
 
