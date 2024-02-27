@@ -1,7 +1,8 @@
 {
   "name": "appchat",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Anonymous chat application",
   "type": "module",
   "author": "Eloho Kennedy",
   "scripts": {
