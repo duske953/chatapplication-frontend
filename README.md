@@ -15,7 +15,7 @@ This repository contains the frontend code for a real-time chat application buil
 
 * **React:** ([https://react.dev/](https://react.dev/))
 * **React Router:** ([https://reactrouter.com/en/main](https://reactrouter.com/en/main))
-* **Socket.IO-client:** ([https://socket.io/docs/v4/client-api/](https://socket.io/docs/v4/client-api/))
+* **Socket.IO:** ([https://socket.io/](https://socket.io/)) 
 * **Vite:** ([https://vitejs.dev/](https://vitejs.dev/))
 * **Sass:** ([https://sass-lang.com/install/](https://sass-lang.com/install/))
 
