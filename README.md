@@ -5,9 +5,9 @@ This repository contains the frontend code for a real-time chat application buil
 ### Features
 
 * **Typing indicator:** This feature visually indicates to other users when someone is actively typing a message, enhancing user experience and real-time engagement.
-* **Anonymous messaging:**Users can participate in the chat without revealing their identity, promoting privacy and encouraging open communication.
+* **Anonymous messaging:** Users can participate in the chat without revealing their identity, promoting privacy and encouraging open communication.
 
-* **Persistent messages within browser session:**Messages are stored and retrieved upon revisiting the chat, allowing users to keep track of the conversation history even after refreshing the browser. (Messages are lost as soon as browser is closed making it really anonymous)
+* **Persistent messages**: Messages are stored and retrieved upon revisiting the chat, allowing users to keep track of the conversation history even after refreshing the browser. (Messages are lost as soon as the browser is closed making it really anonymous)
 * **Chronological message order:** Messages are displayed in the order they are sent, ensuring a clear and consistent flow of conversation.
 * **Message timestamps:** Each message displays the time it was sent, providing context and clarity for the conversation.
   
@@ -24,7 +24,7 @@ This repository contains the frontend code for a real-time chat application buil
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/chat-application-frontend.git
+   git clone https://github.com/duske953/chatapplication-frontend.git
    ```
 
 2. **Install dependencies:**
