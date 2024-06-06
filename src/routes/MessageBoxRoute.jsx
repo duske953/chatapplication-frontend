@@ -56,7 +56,6 @@ export default function MessageBoxRoute() {
       receiverId: receiver.id,
       position: 'left',
       read: true,
-      time: moment().format(),
       title: sender.name,
     });
     inputRef.current.value = '';
