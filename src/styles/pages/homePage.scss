@@ -153,6 +153,7 @@
     padding-bottom: 1.6rem;
     border-bottom: 2px solid v.$primary-grey-color;
     position: fixed;
+    max-width: 150rem;
     z-index: 1000;
     width: 100%;
     top: 0;
@@ -195,6 +196,7 @@
     position: fixed;
     bottom: 1rem;
     width: 77%;
+    max-width:150rem;
     margin-top: auto;
 
     @media (max-width: 62.5em) {
