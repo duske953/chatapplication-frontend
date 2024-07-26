@@ -3,7 +3,7 @@ import io from 'socket.io-client';
 const NODEENV = import.meta.env.VITE_NODE_ENV;
 export const socket = io(
   NODEENV === 'development'
-    ? 'http://localhost:8000'
+    ? 'http://localhost:3000'
     : import.meta.env.VITE_BACKEND_URL,
   {
     withCredentials: true,
