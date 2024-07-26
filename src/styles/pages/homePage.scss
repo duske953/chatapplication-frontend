@@ -2,6 +2,8 @@
 @use '../abstracts/mixins' as m;
 .chats-section {
   position: relative;
+  max-width: 150rem;
+  margin-inline: auto
   &__container {
     display: grid;
     @media (max-width: 43.75em) {
