@@ -23,7 +23,7 @@ export default function IndexMessageBoxRoute() {
       >
         <p>
           Created with love by{' '}
-          <a rel="noreferrer" target="_blank" href="https://eloho-ken.b4a.app">
+          <a rel="noreferrer" target="_blank" href="https://eloho.vercel.app">
             Eloho Kennedy
           </a>
         </p>
